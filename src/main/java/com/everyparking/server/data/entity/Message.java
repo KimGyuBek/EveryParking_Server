@@ -7,10 +7,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
+@Setter
+@Getter
+@ToString
 public class Message extends BaseTime{
 
     @Id
@@ -25,6 +32,7 @@ public class Message extends BaseTime{
     @ManyToOne(fetch = FetchType.LAZY)
     private Member sender;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne()
+    @JoinColumn(name = "member_id")
     private Member receiver;
 }

@@ -2,7 +2,6 @@ package com.everyparking.server.data.entity;
 
 import javax.persistence.Embeddable;
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 @Embeddable
 
@@ -13,7 +12,18 @@ public class UserInfo {
     private String address;
     private String email;
 
-//    @Nullable
+
+    public UserInfo(String phoneNumber, String address, String email) {
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.email = email;
+    }
+
+    public UserInfo() {
+
+    }
+
+    //    @Nullable
 //    private int studentId;
 
 }
