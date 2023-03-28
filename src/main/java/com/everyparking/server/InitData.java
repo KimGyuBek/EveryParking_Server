@@ -58,7 +58,7 @@ public class InitData {
 
     }
 
-    private static Message generateMessage(Member sender, Member receiver, String detail) {
+    private  Message generateMessage(Member sender, Member receiver, String detail) {
         Message message = new Message();
         message.setDetails(detail);
         message.setSender(sender);
@@ -66,7 +66,7 @@ public class InitData {
         return message;
     }
 
-    private static Car generateCar(String carNumber, String modelName,
+    private Car generateCar(String carNumber, String modelName,
         CarStatus carStatus, Member member) {
         Car car = new Car();
         car.setCarNumber(carNumber);
@@ -77,7 +77,7 @@ public class InitData {
         return car;
     }
 
-    private static Member generateMember(String userId, String userName, RoleType roleType,
+    private Member generateMember(String userId, String userName, RoleType roleType,
         UserInfo userInfo, String password) {
         Member member = new Member();
         member.setUserId(userId);
