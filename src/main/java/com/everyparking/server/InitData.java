@@ -6,11 +6,8 @@ import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.data.entity.Message;
 import com.everyparking.server.data.entity.RoleType;
 import com.everyparking.server.data.entity.UserInfo;
-import com.everyparking.server.data.repository.CarRepository;
 import com.everyparking.server.data.repository.MemberRepository;
 import com.everyparking.server.data.repository.MessageRepository;
-import java.sql.Time;
-import java.time.LocalDateTime;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +55,7 @@ public class InitData {
 
     }
 
-    private  Message generateMessage(Member sender, Member receiver, String detail) {
+    private Message generateMessage(Member sender, Member receiver, String detail) {
         Message message = new Message();
         message.setDetails(detail);
         message.setSender(sender);
