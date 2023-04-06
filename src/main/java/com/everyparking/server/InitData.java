@@ -30,24 +30,24 @@ public class InitData {
 
         /*Member 생성*/
         Member member1 = generateMember(
-            "user1", "사용자1", RoleType.USER, new UserInfo(
+            "user1", "user1", RoleType.USER, new UserInfo(
                 "123-1234-1234", "addr1", "user1@ooo.com"
             ), "1234");
 
         Member member2 = generateMember(
-            "user2", "사용자2", RoleType.USER, new UserInfo(
+            "user2", "user2", RoleType.USER, new UserInfo(
                 "143-5632-1235", "addr2", "user2@ooo.com"
             ), "1111");
 
         /*Car 생성*/
         Car car = generateCar(
-            "12가1234", "Escalade", CarStatus.APPROVED, member2);
+            "1234", "Escalade", CarStatus.APPROVED, member2);
         member2.setCar(car);
         memberRepository.save(member1);
         memberRepository.save(member2);
 
         /*Message 생성*/
-        Message message = generateMessage(member1, member2, "메세지1");
+        Message message = generateMessage(member1, member2, "message1");
         messageRepository.save(message);
 
         Message findBySender = messageRepository.findBySender(member1);
