@@ -2,8 +2,9 @@ package com.everyparking.server.controller.api;
 
 import lombok.Data;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-//@RestController
+@RestController
 public class TestController {
 
     @GetMapping("/test")
