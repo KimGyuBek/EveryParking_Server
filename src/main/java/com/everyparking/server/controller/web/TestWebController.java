@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class TestWebController {
 
     @RequestMapping("/")
+    @ResponseBody
     public String test(){
-        return "에브리파킹";
+        return "<h1>에브리파킹</h1>";
     }
 
 }
