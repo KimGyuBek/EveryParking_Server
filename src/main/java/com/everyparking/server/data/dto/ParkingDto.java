@@ -23,13 +23,10 @@ public class ParkingDto {
     }
 
 //    public static
-
     public static class ParkingDetailInfo extends ParkingInfo{
 
 //        사용중인 member info
 //        잔여시간
-//        
-
 
     }
 
