@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class TestController {
 
-//    @GetMapping("/test")
-//    @CrossOrigin("*")
-//    public Student test() {
-//        Student student = new Student(123, 123, "s1");
-//        return student;
-//    }
+    @GetMapping("/test")
+    @CrossOrigin("*")
+    public Student test() {
+        Student student = new Student(123, 123, "s1");
+        return student;
+    }
 
     /**
      * { 'id': id, 'pass': pass, 's_number': s_number, 's_name': s_name }
