@@ -12,10 +12,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
-@Data
+//@Data
 @Table(name = "Car")
+@Getter
 public class Car extends BaseTime {
 
     @Id

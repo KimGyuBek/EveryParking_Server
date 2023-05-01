@@ -1,21 +1,23 @@
 package com.everyparking.server.data.entity;
 
 import javax.persistence.Embeddable;
+import lombok.Builder;
 import lombok.Data;
 
 @Embeddable
 
 @Data
+@Builder
 public class UserInfo {
 
-    private String phoneNumber;
-    private String address;
+    private int phoneNumber;
+//    private String address;
     private String email;
 
 
-    public UserInfo(String phoneNumber, String address, String email) {
+    public UserInfo(int phoneNumber, String email) {
         this.phoneNumber = phoneNumber;
-        this.address = address;
+//        this.address = address;
         this.email = email;
     }
 

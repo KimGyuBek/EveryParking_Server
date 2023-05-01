@@ -15,12 +15,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 /*TODO Entity에서의 setter 제한*/
 @Entity
-@Data
+//@Data
 @Table(name = "Member")
+@Builder
+@AllArgsConstructor
+@Getter
 public class Member extends BaseTime {
 
     @Id
@@ -48,6 +53,10 @@ public class Member extends BaseTime {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id")
     private List<Message> messageList;
+
+    public Member() {
+
+    }
 
     /*TODO 소셜 로그인을 위한 변수 추가*/
 }
