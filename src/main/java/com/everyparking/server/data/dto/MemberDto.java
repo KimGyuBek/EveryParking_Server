@@ -6,6 +6,11 @@ import com.everyparking.server.data.entity.UserInfo;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * <p>
+ *     Member dto
+ * </p>
+ */
 public class MemberDto {
 
     /**
@@ -68,7 +73,19 @@ public class MemberDto {
 
         private boolean status;
 
+        public UserInfoDto(String studentName, boolean status) {
+            this.studentName = studentName;
+            this.status = status;
+        }
+
+
     }
 
-
+    /*TODO 좋지 않은 방법*/
+    public static MemberDto.UserInfoDto toDto(Member member) {
+        return UserInfoDto.builder()
+            .studentName(member.getUserName())
+            .status(true)
+            .build();
+    }
 }

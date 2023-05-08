@@ -3,11 +3,14 @@ package com.everyparking.server.service.impl;
 import com.everyparking.server.data.dto.MemberDto;
 import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.data.repository.MemberRepository;
+import com.everyparking.server.exception.DuplicateUserException;
 import com.everyparking.server.exception.InvalidPwdException;
 import com.everyparking.server.exception.UserNotFoundException;
 import com.everyparking.server.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +34,28 @@ public class MemberServiceImpl implements MemberService {
         Member member = joinDto.toEntity(joinDto);
 
         try {
-            memberRepository.save(member);
+            memberRepository.findByUserId(joinDto.getUserId())
+                .orElseThrow(() ->
+                    new UserNotFoundException("가입 가능"));
+            throw new DuplicateUserException("중복된 아이디");
 
-            log.info("[MemberService] {} 가입 성공", joinDto.toString());
-        } catch (Exception e) {
-            log.info(e.toString());
+
+        } catch (UserNotFoundException e) {
+            try {
+                memberRepository.save(member);
+
+                log.info("[MemberService] {} 가입 성공", joinDto.toString());
+
+
+            } catch (Exception ex) {
+                log.info(ex.toString());
+                throw new RuntimeException("회원가입 실패");
+            }
+
+//            log.info(member.toString());
+
         }
-//
-        log.info(member.toString());
+
 
     }
 
@@ -68,5 +85,24 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
 
+    }
+
+
+    /*userId로 회원 조회
+    메인화면 - userInfo*/
+    @Override
+    public MemberDto.UserInfoDto findByUserId(String userId) {
+        try {
+            Member findMember = memberRepository.findByUserId(userId)
+                .orElseThrow(
+                    () -> new UserNotFoundException("사용자 정보를 찾을 수 없습니다."));
+
+            return MemberDto.toDto(findMember);
+
+        } catch (Exception e) {
+            log.info("[MemberService] {}", e.toString());
+        }
+
+        throw new IllegalStateException("userInfo error");
     }
 }

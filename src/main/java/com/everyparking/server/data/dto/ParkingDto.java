@@ -1,34 +1,52 @@
 package com.everyparking.server.data.dto;
 
-import java.util.List;
+import com.everyparking.server.data.entity.ParkingInfo;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Data;
 
+/**
+ * ParkingDto
+ */
 public class ParkingDto {
 
-    public static class ParkingInfo {
+    /**
+     * 메인화면 - myParkingStatus
+     */
+    @Data
+    @Builder
+    public static class MyParkingStatus {
 
-        private String name;
+        private int parkingId;
+        private int remain;
+        private String carNumber;
 
-        private int total;
+        /**
+         * ParkingInfo -> MyParkingStatus
+         * @param parkingInfo
+         * @return ParkingDto.MyParkingStatus
+         */
+        public static MyParkingStatus toDto(ParkingInfo parkingInfo) {
+            Duration remain = getRemain(parkingInfo);
 
-        private int available;
+            return MyParkingStatus
+                .builder()
+                .parkingId(parkingInfo.getParkingId())
+                .remain(remain.toMinutesPart())
+                .carNumber(parkingInfo.getCar().getCarNumber())
+                .build();
+        }
 
-        private int used;
-
+        private static Duration getRemain(ParkingInfo parkingInfo) {
+            Duration remain = Duration.ofDays(
+                Duration.between(parkingInfo.getCreatedTime().toLocalTime(),
+                    LocalDateTime.now().toLocalTime()).toMinutes());
+            return remain;
+        }
     }
-    public static class Response {
 
-        private Long id;
 
-        private List<ParkingInfo> parkingInfoList;
-    }
-
-//    public static
-    public static class ParkingDetailInfo extends ParkingInfo{
-
-//        사용중인 member info
-//        잔여시간
-
-    }
 
 
 }

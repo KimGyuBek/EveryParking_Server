@@ -2,6 +2,7 @@ package com.everyparking.server.exception;
 
 public class InvalidPwdException extends RuntimeException{
 
+
     public InvalidPwdException() {
 
     }

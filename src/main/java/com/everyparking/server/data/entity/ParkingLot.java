@@ -7,9 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
-public class ParkingLot extends BaseTime{
+@Table(name = "ParkingLot")
+@Builder
+@AllArgsConstructor
+public class ParkingLot extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +27,13 @@ public class ParkingLot extends BaseTime{
     @OneToMany(mappedBy = "parkingLot")
     private List<ParkingInfo> parkingInfoList;
 
-    private int total;
+    private int total = 0;
 
-    private int available;
+    private int available = 0;
 
-    private int used;
+    private int used = 0;
+
+    public ParkingLot() {
+    }
 
 }

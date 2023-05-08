@@ -54,6 +54,11 @@ public class Member extends BaseTime {
     @JoinColumn(name = "message_id")
     private List<Message> messageList;
 
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "parkingInfo_id")
+    private ParkingInfo parkingInfo;
+
     public Member() {
 
     }

@@ -1,13 +1,16 @@
 package com.everyparking.server;
 
 import com.everyparking.server.data.entity.Car;
+import com.everyparking.server.data.entity.CarEnterStatus;
 import com.everyparking.server.data.entity.CarStatus;
-import com.everyparking.server.data.entity.Member;
-import com.everyparking.server.data.entity.Message;
-import com.everyparking.server.data.entity.RoleType;
-import com.everyparking.server.data.entity.UserInfo;
+import com.everyparking.server.data.entity.ParkingInfo;
+import com.everyparking.server.data.entity.ParkingLot;
+import com.everyparking.server.data.entity.ParkingStatus;
+import com.everyparking.server.data.repository.CarRepository;
 import com.everyparking.server.data.repository.MemberRepository;
 import com.everyparking.server.data.repository.MessageRepository;
+import com.everyparking.server.data.repository.ParkingInfoRepository;
+import com.everyparking.server.data.repository.ParkingLotRepository;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,70 +25,69 @@ public class InitData {
 
     private final MessageRepository messageRepository;
 
-//    @PostConstruct
-//    private void initData() {
-//
-//        /*TODO dto 만들어서 builder로 바꿀 예정*/
-//        /*TODO Service 로직 만들어서 데이터 추가 예정*/
-//
-//        /*Member 생성*/
-//        Member member1 = generateMember(
-//            "user1", "user1", RoleType.USER, new UserInfo(
-//                "123-1234-1234", "addr1", "user1@ooo.com"
-//            ), "1234");
-//
-//        Member member2 = generateMember(
-//            "user2", "user2", RoleType.USER, new UserInfo(
-//                "143-5632-1235", "addr2", "user2@ooo.com"
-//            ), "1111");
-//
-//        /*Car 생성*/
-//        Car car = generateCar(
-//            "1234", "Escalade", CarStatus.APPROVED, member2);
-//        member2.setCar(car);
-//        memberRepository.save(member1);
-//        memberRepository.save(member2);
-//
-//        /*Message 생성*/
-//        Message message = generateMessage(member1, member2, "message1");
-//        messageRepository.save(message);
-//
-//        Message findBySender = messageRepository.findBySender(member1);
-//        log.info("{}", findBySender.getDetails());
-//
-//    }
+    private final CarRepository carRepository;
 
-    private Message generateMessage(Member sender, Member receiver, String detail) {
-        Message message = new Message();
-        message.setDetails(detail);
-        message.setSender(sender);
-        message.setReceiver(receiver);
-        return message;
+    private final ParkingInfoRepository parkingInfoRepository;
+
+    private final ParkingLotRepository parkingLotRepository;
+
+
+    @PostConstruct
+    private void initData() {
+        initCar();
+
+        initParkingInfo();
+
+        initParkingLot();
+
+
+
     }
 
-//    private Car generateCar(String carNumber, String modelName,
-//        CarStatus carStatus, Member member) {
-//        Car car = new Car();
-//        car.setCarNumber(carNumber);
-//        car.setModelName(modelName);
-//        car.setCarStatus(carStatus);
-//        car.setMember(member);
-//
-//        return car;
-//    }
+    private void initParkingInfo() {
+        for (int i = 1; i <= 20; i++) {
+            parkingInfoRepository.save(
+                ParkingInfo
+                    .builder()
+                    .parkingId(i)
+                    .parkingStatus(ParkingStatus.AVAILABLE)
+                    .build());
+        }
+    }
 
-//    private Member generateMember(String userId, String userName, RoleType roleType,
-//        UserInfo userInfo, String password) {
-//        Member member = new Member();
-//        member.setUserId(userId);
-//        member.setUserName(userName);
-//        member.setPassword(password);
-//        member.setRoleType(roleType);
-//        member.setUserInfo(
-//            userInfo
-//        );
-//        return member;
-//    }
+    private void initParkingLot() {
+        ParkingLot parkingLot = ParkingLot
+            .builder()
+            .name("테스트")
+            .total(20)
+            .used(0)
+            .available(20 - 0)
+            .build();
+
+        parkingLotRepository.save(parkingLot);
+    }
+
+    private void initCar() {
+        Car car1 = makeCar("65노0887", "Sonata");
+        Car car2 = makeCar("38육4104", "Grandeur");
+        Car car3 = makeCar("245우9315", "Santafe");
+        Car car4 = makeCar("68오8269", "Genesis");
+
+        carRepository.save(car1);
+        carRepository.save(car2);
+        carRepository.save(car3);
+        carRepository.save(car4);
+    }
+
+    private static Car makeCar(String carNumber, String modelName) {
+        Car car = Car.builder()
+            .carNumber(carNumber)
+            .modelName(modelName)
+            .carStatus(CarStatus.APPROVED)
+            .carEnterStatus(new CarEnterStatus(-1, false))
+            .build();
+        return car;
+    }
 
 
 }

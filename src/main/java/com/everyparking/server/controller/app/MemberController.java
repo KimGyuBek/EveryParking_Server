@@ -1,9 +1,12 @@
 package com.everyparking.server.controller.app;
 
 import com.everyparking.server.data.dto.MemberDto;
+import com.everyparking.server.data.dto.MemberDto.UserInfoDto;
+import com.everyparking.server.exception.DuplicateUserException;
 import com.everyparking.server.exception.InvalidPwdException;
 import com.everyparking.server.exception.UserNotFoundException;
 import com.everyparking.server.service.MemberService;
+import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,8 +31,21 @@ public class MemberController {
      * @param joinDto
      */
     @PostMapping("/join")
-    public void join(@RequestBody MemberDto.Join joinDto) {
-        memberService.join(joinDto);
+    public ResponseEntity<?> join(@RequestBody MemberDto.Join joinDto) {
+        try {
+            memberService.join(joinDto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+
+        } catch (DuplicateUserException e) {
+            log.info("[MemberController] {}", e.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (RuntimeException e) {
+            log.info("[MemberController] {}", e.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        }
     }
 
     /**
@@ -54,31 +70,25 @@ public class MemberController {
             log.info("[MemberController] {}", e.toString());
 
         }
+
         return null;
     }
 
+    @GetMapping("/userInfo")
+    public MemberDto.UserInfoDto userInfoDto(HttpServletRequest request) {
+        String userId = request.getHeader("userId").toString();
 
+        try {
+            UserInfoDto findMember = memberService.findByUserId(userId);
 
-    /**
-     * { "studentName" : "studentName", "status" : status, } studentName : String status : boolean
-     * report : int
-     * <p>
-     * 메인화면 - userInfo GET http://everypaking.co.kr/app/member/userInfo
-     */
-//    @GetMapping("/userInfo")
-//    public MemberDto.UserInfo userInfo() {
-//
-//
-//
-//    }
-    @GetMapping("/test")
-    public ResponseEntity<MemberDto.UserInfoDto> test() {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(
-                MemberDto.UserInfoDto.builder()
-                    .studentName("s1")
-                    .status(true)
-                    .build());
+            return findMember;
+
+        } catch (Exception e) {
+            log.info("[MemberController] {}", e);
+
+        }
+
+        throw new IllegalStateException();
     }
 
 
