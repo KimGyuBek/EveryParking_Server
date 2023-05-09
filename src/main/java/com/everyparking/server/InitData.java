@@ -42,10 +42,9 @@ public class InitData {
 
         initCar();
 
-        initParkingInfo();
-
-        initParkingLot();
-
+        initParkingInfo(
+            initParkingLot()
+        );
 
 
     }
@@ -67,18 +66,19 @@ public class InitData {
         );
     }
 
-    private void initParkingInfo() {
+    private void initParkingInfo(ParkingLot parkingLot) {
         for (int i = 1; i <= 20; i++) {
             parkingInfoRepository.save(
                 ParkingInfo
                     .builder()
                     .parkingId(i)
                     .parkingStatus(ParkingStatus.AVAILABLE)
+                    .parkingLot(parkingLot)
                     .build());
         }
     }
 
-    private void initParkingLot() {
+    private ParkingLot initParkingLot() {
         ParkingLot parkingLot = ParkingLot
             .builder()
             .name("테스트")
@@ -88,6 +88,8 @@ public class InitData {
             .build();
 
         parkingLotRepository.save(parkingLot);
+
+        return parkingLot;
     }
 
     private void initCar() {

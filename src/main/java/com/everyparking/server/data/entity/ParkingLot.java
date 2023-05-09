@@ -11,11 +11,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "ParkingLot")
 @Builder
 @AllArgsConstructor
+@Getter
 public class ParkingLot extends BaseTime {
 
     @Id

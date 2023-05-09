@@ -27,6 +27,7 @@ public class ParkingDto {
 
         /**
          * ParkingInfo -> MyParkingStatus
+         *
          * @param parkingInfo
          * @return ParkingDto.MyParkingStatus
          */
@@ -69,6 +70,7 @@ public class ParkingDto {
         @Data
         @Builder
         public static class Map {
+
             private Long id;
 
             private ParkingStatus parkingStatus;
@@ -76,12 +78,7 @@ public class ParkingDto {
         }
 
 
-
     }
-
-
-
-
 
 
 }
