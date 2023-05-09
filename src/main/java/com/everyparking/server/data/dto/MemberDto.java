@@ -8,7 +8,7 @@ import lombok.Data;
 
 /**
  * <p>
- *     Member dto
+ * Member dto
  * </p>
  */
 public class MemberDto {
@@ -55,15 +55,39 @@ public class MemberDto {
     /**
      * Member login Dto
      */
-    @Builder
-    @Data
+//    @Builder
+//    @Data
+//    public static class Login {
+//
+//        private String userId;
+//
+//        private String password;
+//    }
+
     public static class Login {
 
-        private String userId;
+        @Builder
+        @Data
+        public static class Request {
 
-        private String password;
+            private String userId;
+
+            private String password;
+        }
+
+        @Builder
+        @Data
+        public static class Response {
+
+            /*TODO session으로 교체 예정*/
+            private String userId;
+
+            private boolean registered;
+
+
+        }
+
     }
-
 
     @Builder
     @Data

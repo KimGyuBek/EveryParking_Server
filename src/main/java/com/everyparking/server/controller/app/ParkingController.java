@@ -5,7 +5,6 @@ import com.everyparking.server.service.ParkingService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,11 @@ public class ParkingController {
 
     private final ParkingService parkingService;
 
-
+    /**
+     * 메인화면 - 내 주차 정보
+     * @param request
+     * @return
+     */
     @GetMapping("/myParkingStatus")
     public ResponseEntity<?> myParkingStatus(HttpServletRequest request) {
         String userId = request.getHeader("userId").toString();
@@ -36,9 +39,5 @@ public class ParkingController {
             log.info("[ParkingController] {}", e.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
-
-
-
 }

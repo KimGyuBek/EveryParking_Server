@@ -12,7 +12,7 @@ public interface MemberService {
 
     void join(MemberDto.Join joinDto);
 
-    Member login(MemberDto.Login loginDto);
+    Member login(MemberDto.Login.Request loginDto);
 
     /*userId로 회원 조회 - 메인화면 - userInfo*/
     MemberDto.UserInfoDto findByUserId(String userId);

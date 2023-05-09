@@ -33,14 +33,21 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
             /*TODO 위약 검증 로직 추가*/
 
             /* 주차장 출입 처리*/
-            findCar.setEnter(parkingLotId);
-            carRepository.save(findCar);
+            try {
+                findCar.setEnter(parkingLotId);
+                carRepository.save(findCar);
+
+            } catch (Exception e) {
+                log.debug("[ParkingBreakerService] {}", e.toString());
+
+            }
 
             log.info("[ParkingBreakerService] {} 등록 차량", plateNumber);
             log.info("[ParkingBreakerService] {}, {}번 주차장 출입", findCar.getCarNumber(),
                 findCar.getCarEnterStatus().getParkingLotId());
 
             log.debug("[ParkingBreakerService] {}", findCar.getCarEnterStatus().toString());
+//            log.debug("[{}]", this.getClass().getName().toString());
 
             return ParkingBreakerDto.Response
                 .builder()

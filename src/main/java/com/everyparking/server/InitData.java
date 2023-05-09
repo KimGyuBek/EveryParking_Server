@@ -70,7 +70,7 @@ public class InitData {
     private void initCar() {
         Car car1 = makeCar("65노0887", "Sonata");
         Car car2 = makeCar("38육4104", "Grandeur");
-        Car car3 = makeCar("245우9315", "Santafe");
+        Car car3 = makeCar("245우1234", "Santafe");
         Car car4 = makeCar("68오8269", "Genesis");
 
         carRepository.save(car1);
