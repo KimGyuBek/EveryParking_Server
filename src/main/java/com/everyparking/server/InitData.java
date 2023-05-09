@@ -3,9 +3,12 @@ package com.everyparking.server;
 import com.everyparking.server.data.entity.Car;
 import com.everyparking.server.data.entity.CarEnterStatus;
 import com.everyparking.server.data.entity.CarStatus;
+import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.data.entity.ParkingInfo;
 import com.everyparking.server.data.entity.ParkingLot;
 import com.everyparking.server.data.entity.ParkingStatus;
+import com.everyparking.server.data.entity.RoleType;
+import com.everyparking.server.data.entity.UserInfo;
 import com.everyparking.server.data.repository.CarRepository;
 import com.everyparking.server.data.repository.MemberRepository;
 import com.everyparking.server.data.repository.MessageRepository;
@@ -34,6 +37,9 @@ public class InitData {
 
     @PostConstruct
     private void initData() {
+
+        initAdmin();
+
         initCar();
 
         initParkingInfo();
@@ -42,6 +48,23 @@ public class InitData {
 
 
 
+    }
+
+    private void initAdmin() {
+
+        memberRepository.save(
+            Member.builder()
+                .userId("admin")
+                .password("1234")
+                .userName("관리자")
+                .roleType(RoleType.ADMIN)
+                .userInfo(
+                    UserInfo.builder()
+                        .email("admin@a.com")
+                        .phoneNumber(12341234)
+                        .build()
+                ).build()
+        );
     }
 
     private void initParkingInfo() {

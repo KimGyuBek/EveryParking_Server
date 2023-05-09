@@ -1,5 +1,6 @@
 package com.everyparking.server.data.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -52,7 +53,7 @@ public class Member extends BaseTime {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id")
-    private List<Message> messageList;
+    private List<Message> messageList = new ArrayList<>();
 
 
     @OneToOne(cascade = CascadeType.PERSIST)

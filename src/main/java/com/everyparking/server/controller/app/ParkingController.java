@@ -40,4 +40,15 @@ public class ParkingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+
+
+    /**
+     * 주차 맵
+     */
+//    public ParkingDto.ParkingLotMap parkingLotMap() {
+//
+//
+//
+//    }
 }

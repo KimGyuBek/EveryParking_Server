@@ -1,8 +1,11 @@
 package com.everyparking.server.data.dto;
 
 import com.everyparking.server.data.entity.ParkingInfo;
+import com.everyparking.server.data.entity.ParkingStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -45,6 +48,38 @@ public class ParkingDto {
             return remain;
         }
     }
+
+    @Data
+    @Builder
+    public static class ParkingLotMap {
+
+        private Long id;
+        private String name;
+
+        private int total = 0;
+
+        private int used = 0;
+
+        private List<ParkingInfoDto.Map> parkingInfoList = new ArrayList<>();
+
+    }
+
+    public static class ParkingInfoDto {
+
+        @Data
+        @Builder
+        public static class Map {
+            private Long id;
+
+            private ParkingStatus parkingStatus;
+
+        }
+
+
+
+    }
+
+
 
 
 

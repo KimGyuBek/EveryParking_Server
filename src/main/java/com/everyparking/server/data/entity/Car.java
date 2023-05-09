@@ -1,6 +1,6 @@
 package com.everyparking.server.data.entity;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -53,7 +53,7 @@ public class Car extends BaseTime {
     private Member member;
 
     @OneToMany(mappedBy = "car")
-    private List<ParkingInfo> parkingInfo;
+    private List<ParkingInfo> parkingInfo = new ArrayList<>();
 
     public Car() {
 

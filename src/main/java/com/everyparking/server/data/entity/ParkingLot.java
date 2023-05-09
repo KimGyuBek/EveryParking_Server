@@ -1,5 +1,6 @@
 package com.everyparking.server.data.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,11 +26,12 @@ public class ParkingLot extends BaseTime {
     private String name;
 
     @OneToMany(mappedBy = "parkingLot")
-    private List<ParkingInfo> parkingInfoList;
+    private List<ParkingInfo> parkingInfoList = new ArrayList<>();
 
     private int total = 0;
 
     private int available = 0;
+
 
     private int used = 0;
 
