@@ -78,7 +78,7 @@ public class ParkingServiceImpl implements ParkingService {
         }
     }
 
-    /*ParkingLot으로 ParkingMap 반환*/
+    /*ParkingLot ->  ParkingMap 반환*/
     @Override
     public ParkingDto.ParkingLotMap findParkingLotMap(ParkingLot parkingLot) {
         try {

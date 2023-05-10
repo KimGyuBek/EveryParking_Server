@@ -2,7 +2,6 @@ package com.everyparking.server.data.dto;
 
 import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.data.entity.RoleType;
-import com.everyparking.server.data.entity.UserInfo;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,7 +17,7 @@ public class MemberDto {
      */
     @Builder
     @Data
-    public static class Join {
+    public static class UserFullInfo {
 
         private Long id;
 
@@ -40,11 +39,18 @@ public class MemberDto {
          * @param joinDto
          * @return Member
          */
-        public Member toEntity(MemberDto.Join joinDto) {
-            Member member = Member.builder().id(joinDto.id).userId(joinDto.userId)
-                .password(joinDto.password).userName(joinDto.studentName).roleType(RoleType.USER)
+        public Member toEntity(UserFullInfo joinDto) {
+            Member member = Member.builder()
+                .id(joinDto.id)
+                .userId(joinDto.userId)
+                .password(joinDto.password)
+                .userName(joinDto.studentName)
+                .studentId(joinDto.studentId)
+                .roleType(RoleType.USER)
                 .userInfo(
-                    UserInfo.builder().phoneNumber(joinDto.phoneNumber).email(joinDto.email)
+                    com.everyparking.server.data.entity.UserInfo.builder()
+                        .phoneNumber(joinDto.phoneNumber)
+                        .email(joinDto.email)
                         .build())
                 .build();
 
@@ -55,14 +61,6 @@ public class MemberDto {
     /**
      * Member login Dto
      */
-//    @Builder
-//    @Data
-//    public static class Login {
-//
-//        private String userId;
-//
-//        private String password;
-//    }
 
     public static class Login {
 
@@ -112,4 +110,5 @@ public class MemberDto {
             .status(true)
             .build();
     }
+
 }

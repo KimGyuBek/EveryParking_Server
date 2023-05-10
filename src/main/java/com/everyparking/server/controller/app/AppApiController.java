@@ -1,6 +1,6 @@
 package com.everyparking.server.controller.app;
 
-import com.everyparking.server.data.dto.MemberDto;
+import com.everyparking.server.data.dto.MemberDto.UserFullInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class AppApiController {
      */
     @PostMapping("/app/api/join")
     @ResponseBody
-    public void join(@RequestBody() MemberDto.Join joinDto) {
+    public void join(@RequestBody() UserFullInfo joinDto) {
         log.info("[join] {}", joinDto.toString());
     }
 

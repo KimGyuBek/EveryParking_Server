@@ -40,6 +40,8 @@ public class Member extends BaseTime {
 
     private String userName;
 
+    private int studentId;
+
 
     @Enumerated(value = EnumType.STRING)
     private RoleType roleType;

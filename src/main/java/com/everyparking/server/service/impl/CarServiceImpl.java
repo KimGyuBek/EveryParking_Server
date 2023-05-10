@@ -31,6 +31,9 @@ public class CarServiceImpl implements CarService {
             );
 
             try {
+
+                /*TODO 차량 중복 등록 검증*/
+
                 /*차량 저장*/
                 Car car = register.toEntity(register, findMember);
                 log.info("[CarService] {}", car.toString());

@@ -1,12 +1,14 @@
 package com.everyparking.server.controller.app;
 
 import com.everyparking.server.data.dto.MemberDto;
+import com.everyparking.server.data.dto.MemberDto.UserFullInfo;
 import com.everyparking.server.data.dto.MemberDto.UserInfoDto;
 import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.exception.DuplicateUserException;
 import com.everyparking.server.exception.InvalidPwdException;
 import com.everyparking.server.exception.UserNotFoundException;
 import com.everyparking.server.service.MemberService;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,7 @@ public class MemberController {
      * @param joinDto
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody MemberDto.Join joinDto) {
+    public ResponseEntity<?> join(@RequestBody UserFullInfo joinDto) {
         try {
             memberService.join(joinDto);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -84,6 +86,12 @@ public class MemberController {
         return null;
     }
 
+    /**
+     * 메인화면 - 사용자 정보
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/userInfo")
     public MemberDto.UserInfoDto userInfoDto(HttpServletRequest request) {
         String userId = request.getHeader("userId").toString();
@@ -100,6 +108,23 @@ public class MemberController {
         }
 
         throw new IllegalStateException();
+    }
+
+    /**
+     * 회원 목록 조회
+     */
+    @GetMapping("/userList")
+    public ResponseEntity<List<UserFullInfo>> userList() {
+
+        try {
+            List<UserFullInfo> findAll = memberService.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(findAll);
+
+        } catch (Exception e) {
+            log.info("[MemberController] {}", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
     }
 
 
