@@ -4,6 +4,7 @@ import com.everyparking.server.data.entity.Car;
 import com.everyparking.server.data.entity.CarEnterStatus;
 import com.everyparking.server.data.entity.CarStatus;
 import com.everyparking.server.data.entity.Member;
+import com.everyparking.server.data.entity.MemberStatus;
 import com.everyparking.server.data.entity.ParkingInfo;
 import com.everyparking.server.data.entity.ParkingLot;
 import com.everyparking.server.data.entity.ParkingStatus;
@@ -40,13 +41,37 @@ public class InitData {
 
         initAdmin();
 
-        initCar();
+//        initCar();
 
         initParkingInfo(
             initParkingLot()
         );
 
+        Member member = initMember();
+        member.registerCar(initCar());
 
+        memberRepository.save(member);
+
+
+    }
+
+    /*사용자 위약처리*/
+    private Member initMember() {
+        return memberRepository.save(
+            Member.builder()
+                .userId("testUser")
+                .password("4567")
+                .userName("테스트유저")
+                .roleType(RoleType.USER)
+                .userInfo(
+                    UserInfo.builder()
+                        .email("test@a.com")
+                        .phoneNumber(00000000)
+                        .build()
+                )
+                .memberStatus(MemberStatus.FORBIDDEN)
+                .build()
+        );
     }
 
     private void initAdmin() {
@@ -62,7 +87,9 @@ public class InitData {
                         .email("admin@a.com")
                         .phoneNumber(12341234)
                         .build()
-                ).build()
+                )
+                .memberStatus(MemberStatus.DEFAULT)
+                .build()
         );
     }
 
@@ -92,7 +119,7 @@ public class InitData {
         return parkingLot;
     }
 
-    private void initCar() {
+    private Car initCar() {
         Car car1 = makeCar("65노0887", "Sonata");
         Car car2 = makeCar("38육4104", "Grandeur");
         Car car3 = makeCar("245우1234", "Santafe");
@@ -102,6 +129,8 @@ public class InitData {
         carRepository.save(car2);
         carRepository.save(car3);
         carRepository.save(car4);
+
+        return car4;
     }
 
     private static Car makeCar(String carNumber, String modelName) {

@@ -1,6 +1,10 @@
 package com.everyparking.server.data.entity;
 
+import com.everyparking.server.data.dto.CarDto;
+import com.everyparking.server.data.dto.ParkingDto;
+import com.everyparking.server.data.dto.ParkingDto.MyParkingStatus;
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,13 +19,16 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "ParkingInfo")
 @Getter
 @Builder
 @AllArgsConstructor
-public class ParkingInfo extends BaseTime{
+@Embeddable
+@Slf4j
+public class ParkingInfo extends BaseTime {
 
 
     @Id
@@ -48,6 +55,29 @@ public class ParkingInfo extends BaseTime{
 
 
     public ParkingInfo() {
+
+    }
+
+    public MyParkingStatus toDto() {
+        log.info("[{}]", this.getClass().getName());
+
+        MyParkingStatus result = MyParkingStatus.builder()
+            .parkingId(this.getParkingId())
+            .remain(0)
+            .carNumber(this.getCar().getCarNumber())
+            .build();
+
+
+        return result;
+
+    }
+
+    /*자리 사용중 처리*/
+    public void assign(Car car) {
+        if (this.parkingStatus == ParkingStatus.AVAILABLE) {
+            this.parkingStatus = ParkingStatus.USED;
+            this.car = car;
+        }
 
     }
 }

@@ -22,7 +22,6 @@ import lombok.Getter;
 
 /*TODO Entity에서의 setter 제한*/
 @Entity
-//@Data
 @Table(name = "Member")
 @Builder
 @AllArgsConstructor
@@ -42,6 +41,10 @@ public class Member extends BaseTime {
 
     private int studentId;
 
+    /*TODO 사용자 위약 상태 저장*/
+
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus;
 
     @Enumerated(value = EnumType.STRING)
     private RoleType roleType;
@@ -57,13 +60,32 @@ public class Member extends BaseTime {
     @JoinColumn(name = "message_id")
     private List<Message> messageList = new ArrayList<>();
 
-
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parkingInfo_id")
     private ParkingInfo parkingInfo;
 
     public Member() {
 
+    }
+
+    /*차량 등록 로직*/
+    public void registerCar(Car car) {
+        this.car = car;
+    }
+
+    /*사용자 위약 검증*/
+    public boolean checkMemberStatus() {
+        if (this.memberStatus == MemberStatus.FORBIDDEN) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /*자리 배정*/
+    public void assignParking(ParkingInfo parkingInfo) {
+        this.parkingInfo = parkingInfo;
+        parkingInfo.assign(this.car);
     }
 
     /*TODO 소셜 로그인을 위한 변수 추가*/

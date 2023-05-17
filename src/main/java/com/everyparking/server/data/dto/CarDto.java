@@ -32,5 +32,20 @@ public class CarDto {
 
     }
 
+    /**
+     * 자리배정 상세페이지의 사용자 조회를 위한 dto
+     */
+    @Builder
+    @Data
+    public static class ParkingInfo {
+
+        private Long id;
+
+        private String carNumber;
+
+        private MemberDto.UserParkingInfo member;
+    }
+
+
 
 }

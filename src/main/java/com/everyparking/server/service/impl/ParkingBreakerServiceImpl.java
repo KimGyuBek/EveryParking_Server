@@ -10,10 +10,12 @@ import com.everyparking.server.service.ParkingBreakerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional()
 public class ParkingBreakerServiceImpl implements ParkingBreakerService {
 
     private final ParkingInfoRepository parkingInfoRepository;
@@ -30,6 +32,11 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
             Car findCar = carRepository.findByCarNumber(plateNumber).orElseThrow(
                 () -> new CarValidationException("미등록 차량")
             );
+
+            if (!findCar.getMember().checkMemberStatus()) {
+                throw new Exception("위약된 사용자");
+            }
+
             /*TODO 위약 검증 로직 추가*/
 
             /* 주차장 출입 처리*/
@@ -57,6 +64,13 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
         } catch (CarValidationException e) {
             log.debug("[ParkingBreakerService] {}", e.toString());
             log.info("[ParkingBreakerService] {} 미등록 차량", plateNumber);
+            return ParkingBreakerDto.Response
+                .builder()
+                .valid(false)
+                .build();
+        } catch (Exception e) {
+            log.debug("[ParkingBreakerService] {}", e.toString());
+            log.info("[ParkingBreakerService] {} 위약처리된 차량", plateNumber);
             return ParkingBreakerDto.Response
                 .builder()
                 .valid(false)

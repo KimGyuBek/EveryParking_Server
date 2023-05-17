@@ -6,20 +6,24 @@ import com.everyparking.server.data.entity.Member;
 import com.everyparking.server.data.repository.CarRepository;
 import com.everyparking.server.data.repository.MemberRepository;
 import com.everyparking.server.exception.CarException;
+import com.everyparking.server.exception.CarValidationException;
 import com.everyparking.server.exception.UserNotFoundException;
 import com.everyparking.server.service.CarService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
 
     private final MemberRepository memberRepository;
+
 
     @Override
     public CarDto.Register register(CarDto.Register register, String userId) {
@@ -31,11 +35,18 @@ public class CarServiceImpl implements CarService {
             );
 
             try {
+                /*차량 번호 중복 조회*/
+                carRepository.findByCarNumber(register.getCarNumber()).orElseThrow(
+                    () -> new CarException("등록 가능 차량")
+                );
 
-                /*TODO 차량 중복 등록 검증*/
+                throw new CarValidationException("이미 등록된 차량");
 
+            } catch (CarException e) {
                 /*차량 저장*/
                 Car car = register.toEntity(register, findMember);
+                findMember.registerCar(car);
+
                 log.info("[CarService] {}", car.toString());
                 carRepository.save(car);
 
@@ -43,8 +54,9 @@ public class CarServiceImpl implements CarService {
 
                 return register;
 
+
             } catch (Exception e) {
-                log.info("[CarService] {}", e.toString());
+                throw e;
             }
 
         } catch (UserNotFoundException e) {
@@ -52,7 +64,6 @@ public class CarServiceImpl implements CarService {
         } catch (Exception e) {
             log.info("[CarService] {}", e.toString());
         }
-
         throw new CarException("차량 등록 실패");
 
     }

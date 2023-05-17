@@ -6,12 +6,17 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ParkingDto
  */
+@Slf4j
 public class ParkingDto {
 
     /**
@@ -19,34 +24,17 @@ public class ParkingDto {
      */
     @Data
     @Builder
+    @ToString
     public static class MyParkingStatus {
 
         private int parkingId;
         private int remain;
         private String carNumber;
 
-        /**
-         * ParkingInfo -> MyParkingStatus
-         *
-         * @param parkingInfo
-         * @return ParkingDto.MyParkingStatus
-         */
-        public static MyParkingStatus toDto(ParkingInfo parkingInfo) {
-            Duration remain = getRemain(parkingInfo);
-
-            return MyParkingStatus
-                .builder()
-                .parkingId(parkingInfo.getParkingId())
-                .remain(remain.toMinutesPart())
-                .carNumber(parkingInfo.getCar().getCarNumber())
-                .build();
-        }
-
-        private static Duration getRemain(ParkingInfo parkingInfo) {
-            Duration remain = Duration.ofDays(
-                Duration.between(parkingInfo.getCreatedTime().toLocalTime(),
-                    LocalDateTime.now().toLocalTime()).toMinutes());
-            return remain;
+        public MyParkingStatus(int parkingId, int remain, String carNumber) {
+            this.parkingId = parkingId;
+            this.remain = remain;
+            this.carNumber = carNumber;
         }
     }
 
@@ -67,15 +55,41 @@ public class ParkingDto {
 
     public static class ParkingInfoDto {
 
+
         @Data
         @Builder
         public static class Map {
 
             private Long id;
 
+            private int parkingId;
+
             private ParkingStatus parkingStatus;
 
         }
+
+
+
+        /**
+         * 자리배정 상세페이지의 사용자 조회를 위한 dto
+         */
+        @Data
+        @Builder
+        public static class Info {
+
+            private Long id;
+
+            private int parkingId;
+
+            private ParkingStatus parkingStatus;
+
+//            private CarDto.ParkingInfo car;
+
+            private Object details;
+
+
+        }
+
 
 
     }

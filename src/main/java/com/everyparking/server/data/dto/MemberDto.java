@@ -1,7 +1,9 @@
 package com.everyparking.server.data.dto;
 
 import com.everyparking.server.data.entity.Member;
+import com.everyparking.server.data.entity.MemberStatus;
 import com.everyparking.server.data.entity.RoleType;
+import javax.persistence.MappedSuperclass;
 import lombok.Builder;
 import lombok.Data;
 
@@ -52,11 +54,30 @@ public class MemberDto {
                         .phoneNumber(joinDto.phoneNumber)
                         .email(joinDto.email)
                         .build())
+                .memberStatus(MemberStatus.DEFAULT)
                 .build();
 
             return member;
         }
     }
+
+    /**
+     * 자리배정 상세페이지의 사용자 조회를 위한 dto
+     */
+    @Data
+    @Builder
+    @MappedSuperclass
+    public static class UserParkingInfo {
+
+
+        private Long id;
+
+        private String userId;
+
+        private String userName;
+
+    }
+
 
     /**
      * Member login Dto

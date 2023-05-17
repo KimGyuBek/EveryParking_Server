@@ -19,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
+@Transactional
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -30,7 +31,6 @@ public class MemberServiceImpl implements MemberService {
      * @param joinDto
      */
     @Override
-    @Transactional
     public void join(UserFullInfo joinDto) {
 
         Member member = joinDto.toEntity(joinDto);
@@ -70,7 +70,8 @@ public class MemberServiceImpl implements MemberService {
     public Member login(MemberDto.Login.Request loginDto) {
 //        Member findMember = memberRepository.findByUserId(loginDto.getUserId()).orElseGet(null);
         Member findMember = memberRepository.findByUserId(loginDto.getUserId())
-            .orElseThrow(() -> new UserNotFoundException("존재하지 않는 회원"));
+            .orElseThrow(
+                () -> new UserNotFoundException("존재하지 않는 회원"));
         log.info("[MemberService] {}", findMember.toString());
         if (findMember != null) {
             if (findMember.getPassword().equals(loginDto.getPassword())) {
@@ -81,8 +82,6 @@ public class MemberServiceImpl implements MemberService {
                 throw new InvalidPwdException("비밀번호 오류");
             }
         } else {
-//            log.info("[MemberService] 존재하지 않는 회원");
-//            throw new UserNotFoundException("존재하지 않는 회원");
 
             return null;
         }
@@ -140,7 +139,6 @@ public class MemberServiceImpl implements MemberService {
         } catch (Exception e) {
             log.info("[MemberService] {}", e.toString());
             throw e;
-
         }
 
 

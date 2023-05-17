@@ -1,6 +1,9 @@
 package com.everyparking.server.controller.app;
 
+import static org.springframework.http.ResponseEntity.status;
+
 import com.everyparking.server.data.dto.ParkingDto;
+import com.everyparking.server.data.dto.ParkingDto.MyParkingStatus;
 import com.everyparking.server.data.dto.ParkingDto.ParkingLotMap;
 import com.everyparking.server.data.entity.ParkingLot;
 import com.everyparking.server.service.ParkingService;
@@ -37,12 +40,16 @@ public class ParkingController {
         log.info("[ParkingController] userId : {}", userId);
 
         try {
-            ParkingDto.MyParkingStatus result = parkingService.findByUserId(userId);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            MyParkingStatus result = parkingService.findByUserId(userId);
+            log.info("[{}] {}", this.getClass().getName(), result.toString());
+
+            return status(HttpStatus.OK)
+                .body(result);
 
         } catch (Exception e) {
-            log.info("[ParkingController] {}", e.toString());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//            log.info("[ParkingController] {}", e.getCause());
+            log.info("[ParkingController] {}", e.getMessage());
+            return status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -51,7 +58,6 @@ public class ParkingController {
      * 주차 맵
      */
     @GetMapping("/map/{parkingLotId}")
-//    public ParkingDto.ParkingLotMap parkingLotMap(@RequestParam int parkingLotId) {
     public ResponseEntity<ParkingDto.ParkingLotMap> parkingLotMap(@PathVariable Long parkingLotId) {
 
         log.info("[ParkingController] parkingLotId : {}", parkingLotId);
@@ -62,13 +68,58 @@ public class ParkingController {
                 parkingLotId);
             ParkingLotMap parkingLotMap = parkingService.findParkingLotMap(parkingLot);
 
-            return ResponseEntity.status(HttpStatus.OK).body(parkingLotMap);
+            return status(HttpStatus.OK)
+                .body(parkingLotMap);
 
         } catch (Exception e) {
             log.info("[ParkingController] {}", e.toString());
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return status(HttpStatus.NOT_FOUND)
+                .build();
         }
     }
+
+    /**
+     * 자리 정보
+     *
+     * @param parkingInfoId
+     * @return
+     */
+    @GetMapping("/info/{parkingInfoId}")
+    public ResponseEntity<?> parkingInfo(@PathVariable Long parkingInfoId) {
+
+        try {
+            return status(HttpStatus.OK)
+                .body(
+                    parkingService.findByParingId(parkingInfoId));
+        } catch (Exception e) {
+            log.info("[{}] {}", this.getClass().getName(), e.getMessage());
+
+            return status(HttpStatus.BAD_REQUEST)
+                .build();
+        }
+    }
+
+    @GetMapping("/assign/{parkingInfoId}")
+    public ResponseEntity<?> assign(@PathVariable Long parkingInfoId, HttpServletRequest request) {
+        String userId = request.getHeader("userId");
+
+        try {
+            return status(HttpStatus.OK)
+                .body(
+                    parkingService.assign(parkingInfoId, userId));
+
+        } catch (Exception e) {
+            log.info("[{}] {}", this.getClass().getName(), e.getMessage());
+
+            return status(HttpStatus.NOT_FOUND).build();
+
+        }
+
+    }
+
+//    @GetMapping("/return")
+//    public ResponseEntity<?>
+
 
 }
