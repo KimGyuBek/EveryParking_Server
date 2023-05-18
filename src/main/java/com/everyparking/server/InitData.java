@@ -94,7 +94,7 @@ public class InitData {
     }
 
     private void initParkingInfo(ParkingLot parkingLot) {
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 56; i++) {
             parkingInfoRepository.save(
                 ParkingInfo
                     .builder()
