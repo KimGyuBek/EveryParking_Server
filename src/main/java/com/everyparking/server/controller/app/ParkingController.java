@@ -1,5 +1,6 @@
 package com.everyparking.server.controller.app;
 
+import static org.springframework.http.ResponseEntity.*;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.everyparking.server.data.dto.ParkingDto;
@@ -38,6 +39,8 @@ public class ParkingController {
         String userId = request.getHeader("userId").toString();
 //        String userId = request.getHeaders().getFirst("userId");
         log.info("[ParkingController] userId : {}", userId);
+
+        /*TODO 남은 시간 계산 로직 추가*/
 
         try {
             MyParkingStatus result = parkingService.findByUserId(userId);
@@ -100,6 +103,12 @@ public class ParkingController {
         }
     }
 
+    /**
+     * 차량 자리 배정
+     * @param parkingInfoId
+     * @param request
+     * @return
+     */
     @GetMapping("/assign/{parkingInfoId}")
     public ResponseEntity<?> assign(@PathVariable Long parkingInfoId, HttpServletRequest request) {
         String userId = request.getHeader("userId");
@@ -118,8 +127,18 @@ public class ParkingController {
 
     }
 
-//    @GetMapping("/return")
-//    public ResponseEntity<?>
+    @GetMapping("/return/{parkingInfoId}")
+    public ResponseEntity<?> parkingReturn(@PathVariable Long parkingInfoId, HttpServletRequest request) {
+
+        try {
+            parkingService.parkingReturn(parkingInfoId, request.getHeader("userId"));
+            return status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return status(HttpStatus.BAD_REQUEST).build();
+        }
+
+    }
+
 
 
 }

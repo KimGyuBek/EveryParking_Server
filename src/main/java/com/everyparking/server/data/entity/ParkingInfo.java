@@ -80,4 +80,11 @@ public class ParkingInfo extends BaseTime {
         }
 
     }
+
+    public void returnParking() {
+        if (this.parkingStatus == ParkingStatus.USED) {
+            this.parkingStatus = ParkingStatus.AVAILABLE;
+            this.car = null;
+        }
+    }
 }

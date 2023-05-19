@@ -1,15 +1,10 @@
 package com.everyparking.server.data.dto;
 
-import com.everyparking.server.data.entity.ParkingInfo;
 import com.everyparking.server.data.entity.ParkingStatus;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +31,7 @@ public class ParkingDto {
             this.remain = remain;
             this.carNumber = carNumber;
         }
+
     }
 
     @Data
@@ -69,7 +65,6 @@ public class ParkingDto {
         }
 
 
-
         /**
          * 자리배정 상세페이지의 사용자 조회를 위한 dto
          */
@@ -89,7 +84,6 @@ public class ParkingDto {
 
 
         }
-
 
 
     }

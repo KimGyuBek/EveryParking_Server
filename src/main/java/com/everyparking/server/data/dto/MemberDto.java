@@ -122,14 +122,18 @@ public class MemberDto {
         }
 
 
+
     }
 
-    /*TODO 좋지 않은 방법*/
     public static MemberDto.UserInfoDto toDto(Member member) {
         return UserInfoDto.builder()
             .studentName(member.getUserName())
-            .status(true)
+            .status(
+                member.checkParkingStatus()
+            )
             .build();
+
     }
+    /*TODO 좋지 않은 방법*/
 
 }

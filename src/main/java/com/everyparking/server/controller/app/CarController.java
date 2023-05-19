@@ -1,7 +1,7 @@
 package com.everyparking.server.controller.app;
 
 import com.everyparking.server.data.dto.CarDto;
-import com.everyparking.server.exception.CarException;
+import com.everyparking.server.exception.CarValidationException;
 import com.everyparking.server.service.CarService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,8 @@ public class CarController {
                 .body(
                     carService.register(register, userId));
 
-        } catch (CarException e) {
+            /**/
+        } catch (CarValidationException e) {
             log.info("[CarController] {}", e.toString());
 
             return ResponseEntity
@@ -46,7 +47,7 @@ public class CarController {
             log.info("[CarController] {}", e.toString());
 
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.FORBIDDEN)
                 .build();
         }
     }

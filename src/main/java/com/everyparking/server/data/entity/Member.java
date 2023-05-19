@@ -82,10 +82,23 @@ public class Member extends BaseTime {
         }
     }
 
+    public boolean checkParkingStatus() {
+        if (this.parkingInfo != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /*자리 배정*/
     public void assignParking(ParkingInfo parkingInfo) {
         this.parkingInfo = parkingInfo;
         parkingInfo.assign(this.car);
+    }
+
+    public void returnParking(ParkingInfo parkingInfo) {
+        this.parkingInfo = parkingInfo;
+        parkingInfo.returnParking();
     }
 
     /*TODO 소셜 로그인을 위한 변수 추가*/

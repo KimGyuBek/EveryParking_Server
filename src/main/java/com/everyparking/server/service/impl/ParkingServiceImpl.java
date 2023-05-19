@@ -203,5 +203,31 @@ public class ParkingServiceImpl implements ParkingService {
 
     }
 
+    @Override
+    public void parkingReturn(Long parkingInfoId, String userId) {
+
+        /*TODO 리팩토링, 중복 로직 합치기, 기록 테이블 생성*/
+
+        try {
+            Member member = memberRepository.findByUserId(userId).orElseThrow(
+                () -> new UserNotFoundException("사용자를 찾을 수 없음")
+            );
+
+            ParkingInfo parkingInfo = parkingInfoRepository.findById(parkingInfoId).orElseThrow(
+                () -> new ParkingInfoException("ParkingInfo Error")
+            );
+            member.returnParking(parkingInfo);
+            memberRepository.save(member);
+
+            log.info("[{}] {}번 자리 반납", this.getClass().getName(), parkingInfo.getParkingId());
+
+
+        } catch (UserNotFoundException e) {
+            log.info("[{}] {}", this.getClass().getName(), e.getMessage());
+            throw e;
+        }
+
+    }
+
 
 }

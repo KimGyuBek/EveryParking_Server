@@ -43,7 +43,7 @@ public class MemberController {
 
         } catch (DuplicateUserException e) {
             log.info("[MemberController] {}", e.toString());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
         } catch (RuntimeException e) {
             log.info("[MemberController] {}", e.toString());

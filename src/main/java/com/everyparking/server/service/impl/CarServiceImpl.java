@@ -61,10 +61,12 @@ public class CarServiceImpl implements CarService {
 
         } catch (UserNotFoundException e) {
             log.info("[CarService] {}", e.toString());
+            throw e;
+
         } catch (Exception e) {
             log.info("[CarService] {}", e.toString());
+            throw e;
         }
-        throw new CarException("차량 등록 실패");
 
     }
 }

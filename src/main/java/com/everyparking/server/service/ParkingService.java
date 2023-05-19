@@ -29,4 +29,5 @@ public interface ParkingService {
 
     ParkingInfoDto.Info assign(Long parkingInfoId, String userId);
 
+    void parkingReturn(Long parkingInfoId, String userId);
 }
