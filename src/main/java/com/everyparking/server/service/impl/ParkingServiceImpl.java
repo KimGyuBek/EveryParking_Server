@@ -183,7 +183,8 @@ public class ParkingServiceImpl implements ParkingService {
             ParkingInfo parkingInfo = parkingInfoRepository.findById(parkingInfoId).orElseThrow(
                 () -> new ParkingInfoException("ParkingInfo Error")
             );
-            member.assignParking(parkingInfo);
+//            member.assignParking(parkingInfo);
+            member.changeParkingStatus(parkingInfo);
             memberRepository.save(member);
 
             log.info("[{}] {}번 자리 대여", this.getClass().getName(), parkingInfo.getParkingId());
@@ -216,7 +217,8 @@ public class ParkingServiceImpl implements ParkingService {
             ParkingInfo parkingInfo = parkingInfoRepository.findById(parkingInfoId).orElseThrow(
                 () -> new ParkingInfoException("ParkingInfo Error")
             );
-            member.returnParking(parkingInfo);
+//            member.returnParking(parkingInfo);
+            member.changeParkingStatus(parkingInfo);
             memberRepository.save(member);
 
             log.info("[{}] {}번 자리 반납", this.getClass().getName(), parkingInfo.getParkingId());

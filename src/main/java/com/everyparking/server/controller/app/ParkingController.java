@@ -127,6 +127,7 @@ public class ParkingController {
 
     }
 
+    /*반납*/
     @GetMapping("/return/{parkingInfoId}")
     public ResponseEntity<?> parkingReturn(@PathVariable Long parkingInfoId, HttpServletRequest request) {
 

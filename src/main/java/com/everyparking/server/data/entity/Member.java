@@ -91,14 +91,26 @@ public class Member extends BaseTime {
     }
 
     /*자리 배정*/
-    public void assignParking(ParkingInfo parkingInfo) {
-        this.parkingInfo = parkingInfo;
-        parkingInfo.assign(this.car);
-    }
+//    public void assignParking(ParkingInfo parkingInfo) {
+//        this.parkingInfo = parkingInfo;
+//        parkingInfo.assign(this.car);
+//    }
+//
+//    public void returnParking(ParkingInfo parkingInfo) {
+//        this.parkingInfo = parkingInfo;
+//        parkingInfo.returnParking();
+//    }
 
-    public void returnParking(ParkingInfo parkingInfo) {
-        this.parkingInfo = parkingInfo;
-        parkingInfo.returnParking();
+    public void changeParkingStatus(ParkingInfo parkingInfo) {
+        if (this.parkingInfo == null) {
+            this.parkingInfo = parkingInfo;
+
+        } else if (this.parkingInfo != null) {
+            this.parkingInfo = null;
+
+        }
+
+        parkingInfo.changeParkingStatus();
     }
 
     /*TODO 소셜 로그인을 위한 변수 추가*/

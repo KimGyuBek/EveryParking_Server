@@ -21,3 +21,10 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
+
+
+#file:
+#  dir: /Users/gimgyubaeg/Desktop/fileTest/
+
+file:
+  dir: /root/server/server/file/
