@@ -1,10 +1,19 @@
 package com.everyparking.server.data.entity;
 
+import com.everyparking.server.filestore.UploadFile;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import org.springframework.data.util.Lazy;
 
 @Entity
 
@@ -19,8 +28,10 @@ public class Report extends BaseTime {
     private String detail;
 
     /*TODO file upload 구현*/
-//    private UploadFile uploadFile;
+//    @OneToMany(cascade = CascadeType.PERSIST )
+//    @JoinColumn(name = "image_id")
+//    private List<UploadFile> uploadFiles = new ArrayList<>();
 
-//    @ManyToOne
-//    private Member sender;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 }

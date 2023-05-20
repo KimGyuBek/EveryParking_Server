@@ -217,7 +217,7 @@ public class ParkingServiceImpl implements ParkingService {
             ParkingInfo parkingInfo = parkingInfoRepository.findById(parkingInfoId).orElseThrow(
                 () -> new ParkingInfoException("ParkingInfo Error")
             );
-//            member.returnParking(parkingInfo);
+
             member.changeParkingStatus(parkingInfo);
             memberRepository.save(member);
 

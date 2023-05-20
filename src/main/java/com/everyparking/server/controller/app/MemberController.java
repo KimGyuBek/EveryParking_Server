@@ -68,8 +68,11 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK)
                 .body(MemberDto.Login.Response.builder()
                     .userId(userId)
-                    .registered(true)
+                    .registered(
+                        member.checkCar()
+                    )
                     .build());
+
         } catch (UserNotFoundException e) {
             log.info("[MemberController] {}", e.toString());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -80,10 +83,9 @@ public class MemberController {
 
         } catch (Exception e) {
             log.info("[MemberController] {}", e.toString());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         }
-
-        return null;
     }
 
     /**

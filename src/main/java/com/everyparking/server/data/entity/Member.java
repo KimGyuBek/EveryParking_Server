@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-/*TODO Entity에서의 setter 제한*/
 @Entity
 @Table(name = "Member")
 @Builder
@@ -54,7 +53,7 @@ public class Member extends BaseTime {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "car_id")
-    private Car car;
+    private Car car = null;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_id")
@@ -63,6 +62,11 @@ public class Member extends BaseTime {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parkingInfo_id")
     private ParkingInfo parkingInfo;
+
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "report_id")
+    private List<Report> reportList = new ArrayList<>();
 
     public Member() {
 
@@ -91,16 +95,6 @@ public class Member extends BaseTime {
     }
 
     /*자리 배정*/
-//    public void assignParking(ParkingInfo parkingInfo) {
-//        this.parkingInfo = parkingInfo;
-//        parkingInfo.assign(this.car);
-//    }
-//
-//    public void returnParking(ParkingInfo parkingInfo) {
-//        this.parkingInfo = parkingInfo;
-//        parkingInfo.returnParking();
-//    }
-
     public void changeParkingStatus(ParkingInfo parkingInfo) {
         if (this.parkingInfo == null) {
             this.parkingInfo = parkingInfo;
@@ -111,7 +105,17 @@ public class Member extends BaseTime {
         }
 
         parkingInfo.changeParkingStatus();
+
     }
 
-    /*TODO 소셜 로그인을 위한 변수 추가*/
+    /*차량 등록 검증*/
+    public boolean checkCar() {
+        if (this.car != null) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
 }

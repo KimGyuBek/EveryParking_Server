@@ -66,30 +66,16 @@ public class ParkingInfo extends BaseTime {
             .build();
 
         return result;
-
     }
 
-    /*자리 사용중 처리*/
-//    public void assign(Car car) {
-//        if (this.parkingStatus == ParkingStatus.AVAILABLE) {
-//            this.parkingStatus = ParkingStatus.USED;
-//            this.car = car;
-//        }
-//
-//    }
-//
-//    public void returnParking() {
-//        if (this.parkingStatus == ParkingStatus.USED) {
-//            this.parkingStatus = ParkingStatus.AVAILABLE;
-//            this.car = null;
-//        }
-//    }
 
     /*parkingStatus 변경*/
     public void changeParkingStatus() {
+
 //        이용가능한 경우 사용중으로 변환
         if (this.parkingStatus == ParkingStatus.AVAILABLE) {
             this.parkingStatus = ParkingStatus.USED;
+
 //            사용중인 경우 이용가능으로 변환
         } else if (this.parkingStatus == ParkingStatus.USED) {
             this.parkingStatus = ParkingStatus.AVAILABLE;

@@ -1,6 +1,5 @@
 package com.everyparking.server.controller.app;
 
-import static org.springframework.http.ResponseEntity.*;
 import static org.springframework.http.ResponseEntity.status;
 
 import com.everyparking.server.data.dto.ParkingDto;
@@ -50,11 +49,14 @@ public class ParkingController {
                 .body(result);
 
         } catch (Exception e) {
-//            log.info("[ParkingController] {}", e.getCause());
             log.info("[ParkingController] {}", e.getMessage());
             return status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    /**
+     * main -
+     */
 
 
     /**
@@ -105,18 +107,18 @@ public class ParkingController {
 
     /**
      * 차량 자리 배정
+     *
      * @param parkingInfoId
      * @param request
      * @return
      */
     @GetMapping("/assign/{parkingInfoId}")
     public ResponseEntity<?> assign(@PathVariable Long parkingInfoId, HttpServletRequest request) {
-        String userId = request.getHeader("userId");
 
         try {
             return status(HttpStatus.OK)
                 .body(
-                    parkingService.assign(parkingInfoId, userId));
+                    parkingService.assign(parkingInfoId, request.getHeader("userId")));
 
         } catch (Exception e) {
             log.info("[{}] {}", this.getClass().getName(), e.getMessage());
@@ -129,7 +131,8 @@ public class ParkingController {
 
     /*반납*/
     @GetMapping("/return/{parkingInfoId}")
-    public ResponseEntity<?> parkingReturn(@PathVariable Long parkingInfoId, HttpServletRequest request) {
+    public ResponseEntity<?> parkingReturn(@PathVariable Long parkingInfoId,
+        HttpServletRequest request) {
 
         try {
             parkingService.parkingReturn(parkingInfoId, request.getHeader("userId"));
@@ -139,7 +142,6 @@ public class ParkingController {
         }
 
     }
-
 
 
 }
