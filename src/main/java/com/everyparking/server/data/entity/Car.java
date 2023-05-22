@@ -22,6 +22,7 @@ import lombok.Setter;
 //@Data
 @Table(name = "Car")
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class Car extends BaseTime {

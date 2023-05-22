@@ -4,10 +4,14 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mariadb://49.50.173.86:3306/everyparking
-    username: root
-    password: dd990219
+    url: jdbc:mariadb://localhost:3306/wans_db?allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: wans
+    password: chltmdghks6245
     driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://49.50.173.86:3306/everyparking
+#    username: root
+#    password: dd990219
+#    driver-class-name: org.mariadb.jdbc.Driver
 
 
 
@@ -24,7 +28,7 @@ logging.level:
 
 
 #file:
-#  dir: /Users/gimgyubaeg/Desktop/fileTest/
+#  dir: /root/server/server/file/
 
 file:
-  dir: /root/server/server/file/
+  dir: /home/ubuntu/history/

@@ -52,7 +52,7 @@ public class InitData {
             "테스트유저",
             "test@a.com",
             00000000,
-            MemberStatus.FORBIDDEN);
+            MemberStatus.DEFAULT);
         member1.registerCar(initCar());
 
         memberRepository.save(member1);
@@ -108,7 +108,7 @@ public class InitData {
         Car car1 = makeCar("65노0887", "Sonata");
         Car car2 = makeCar("38육4104", "Grandeur");
         Car car3 = makeCar("245우1234", "Santafe");
-        Car car4 = makeCar("68오8269", "Genesis");
+        Car car4 = makeCar("12가1234", "Genesis");
 
         carRepository.save(car1);
         carRepository.save(car2);

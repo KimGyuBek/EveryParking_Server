@@ -23,6 +23,8 @@ public interface ParkingBreakerService {
      */
     ParkingBreakerDto.Response isValid(ParkingBreakerDto.Request request);
 
+    void entry(String fileFullName);
 
+    void exit(String carNumber);
 
 }

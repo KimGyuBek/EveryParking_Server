@@ -7,10 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 @RestController
 /**
@@ -44,4 +45,35 @@ public class ParkingBreakerController {
         }
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("image") MultipartFile file) {
+        // 해당 차량이 입장 상태이면 예외처리
+
+        try {
+            String fileFullName = Objects.requireNonNull(file.getOriginalFilename());
+
+            // 이미지 저장 경로 설정
+            String uploadDir = "/home/ubuntu/history";
+            File uploadDirFile = new File(uploadDir);
+
+            // 폴더 생성
+            if (!uploadDirFile.exists()) {
+                uploadDirFile.mkdirs();
+            }
+
+            // 이미지 파일 경로 설정
+            File dest = new File(uploadDir, fileFullName);
+
+            // 이미지 저장
+            file.transferTo(dest);
+
+            // DB 삽입 및 이벤트
+            parkingBreakerService.entry(fileFullName);
+
+            return ResponseEntity.ok("File uploaded successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+        }
+    }
 }

@@ -1,0 +1,156 @@
+#wrap {
+    display: flex;
+}
+#slider, #parkingLotStatus-section {
+    border: 1px solid #ccc;
+    overflow: auto;
+    padding: 0 30px;
+}
+#wrap h3 {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 50px 0;
+}
+#parkingLotStatus-section {
+    width: 60%;
+    height: 100vh;
+}
+#parking-map {
+    overflow-y: auto;
+    height: 80%;
+}
+#parking-map::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+#slider {
+    width: 40%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+.slide-section {
+    overflow-y: auto;
+    height: 80%;
+}
+.slide-section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+
+.simple-time {
+    margin-right: 14px;
+}
+.lp-image-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.lp-image {
+    max-width: 360px;
+}
+.entry-exit-time {
+    margin: 14px 0;
+}
+.entry-exit-time > p {
+    padding: 0 10px;
+}
+.entry-exit-time .entry-time {
+    color: blue;
+}
+.entry-exit-time .entry-time::before {
+    display: inline-block;
+    content: "+";
+    width: 24px;
+    text-align: center;
+}
+.entry-exit-time .exit-time {
+    color: red;
+}
+.entry-exit-time .exit-time::before {
+    display: inline-block;
+    content: "-";
+    width: 24px;
+    text-align: center;
+}
+.entry-exit-time .exit-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+.resize-bar {
+    width: 10px; /* 바의 너비 */
+    cursor: col-resize;
+    background-color: #ccc;
+}
+
+#parking-map {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+#parking-map::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.map-col {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.spot {
+    width: 70px;
+    height: 70px;
+    margin: 3px;
+    border-radius: 5px;
+    line-height: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+.btn-primary.unoccupied {
+    background-color: transparent;
+    color: black;
+}
+.btn-primary.unoccupied:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+.btn-primary.occupuied {
+    background-color: #0d6efd;
+}
+
+
+/* 신고페이지 */
+#reportStatus-section {
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transition: top .5s ease;
+    overflow: hidden;
+    background-color: white;
+    padding: 0 30px;
+}
+#reportStatus-section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+#reportStatus-section.slide-up {
+    top: 0;
+}
+
+#reportSection-toggle {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 40px;
+    color: #0d6efd;
+}
+#reportSection-toggle:hover {
+    color: #0c4db0;
+}
