@@ -12,10 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
 @Table(name = "UploadFile")
+@Getter
 public class UploadFile extends BaseTime {
 
     @Id
@@ -27,8 +29,8 @@ public class UploadFile extends BaseTime {
 
     private String storeFileName;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Report report;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Report report;
 
     public UploadFile(String uploadFileName, String storeFileName) {
         this.uploadFileName = uploadFileName;

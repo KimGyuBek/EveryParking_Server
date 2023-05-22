@@ -1,6 +1,8 @@
 package com.everyparking.server.data.dto;
 
 import com.everyparking.server.data.entity.ParkingStatus;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -31,6 +33,7 @@ public class ParkingDto {
             this.remain = remain;
             this.carNumber = carNumber;
         }
+
 
     }
 

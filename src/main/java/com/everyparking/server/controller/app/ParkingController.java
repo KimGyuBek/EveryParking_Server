@@ -36,7 +36,6 @@ public class ParkingController {
     @GetMapping("/myParkingStatus")
     public ResponseEntity<?> myParkingStatus(HttpServletRequest request) {
         String userId = request.getHeader("userId").toString();
-//        String userId = request.getHeaders().getFirst("userId");
         log.info("[ParkingController] userId : {}", userId);
 
         /*TODO 남은 시간 계산 로직 추가*/
@@ -53,10 +52,6 @@ public class ParkingController {
             return status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-    /**
-     * main -
-     */
 
 
     /**

@@ -13,11 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.data.util.Lazy;
 
 @Entity
-
-/*TODO Message.class와 겹치는 부분이 많음 -> 합치는게 좋을 듯*/
+@Builder
+@AllArgsConstructor
 public class Report extends BaseTime {
 
     @Id
@@ -25,13 +27,22 @@ public class Report extends BaseTime {
     @Column(name = "report_id")
     private Long id;
 
-    private String detail;
+    private String title;
 
-    /*TODO file upload 구현*/
-//    @OneToMany(cascade = CascadeType.PERSIST )
-//    @JoinColumn(name = "image_id")
-//    private List<UploadFile> uploadFiles = new ArrayList<>();
+    private String contents;
+
+    @OneToMany(cascade = CascadeType.PERSIST )
+    @JoinColumn(name = "image_id")
+    private List<UploadFile> uploadFiles = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public void uploadFile(UploadFile uploadFile) {
+        this.uploadFiles.add(uploadFile);
+    }
+
+    public Report() {
+
+    }
 }

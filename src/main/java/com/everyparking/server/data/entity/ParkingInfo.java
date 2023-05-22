@@ -1,6 +1,8 @@
 package com.everyparking.server.data.entity;
 
 import com.everyparking.server.data.dto.ParkingDto.MyParkingStatus;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -61,11 +63,29 @@ public class ParkingInfo extends BaseTime {
 
         MyParkingStatus result = MyParkingStatus.builder()
             .parkingId(this.getParkingId())
-            .remain(0)
+            .remain(
+//                calcTime()
+                123
+            )
             .carNumber(this.getCar().getCarNumber())
             .build();
 
         return result;
+    }
+
+    private int calcTime() {
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        // 두 날짜 사이의 시간 간격 계산
+        Duration duration = Duration.between(this.getCreatedTime(), now);
+
+        // 분으로 변환
+        int minutes = (int) duration.toMinutes();
+
+        log.info("[{}] remain : {}", this.getClass().getName(), minutes);
+
+        return minutes;
     }
 
 

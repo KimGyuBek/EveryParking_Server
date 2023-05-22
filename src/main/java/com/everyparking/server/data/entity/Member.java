@@ -117,5 +117,8 @@ public class Member extends BaseTime {
             return false;
         }
     }
+    public void saveReport(Report report) {
+        this.reportList.add(report);
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.everyparking.server.controller.app;
 
 import com.everyparking.server.filestore.FileStore;
+import com.everyparking.server.filestore.UploadFile;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.servlet.http.HttpServletRequest;
@@ -93,12 +94,18 @@ public class ImageController {
 
 
         try {
-            fileStore.storeFile(multipartFile, userId);
+            UploadFile uploadFile = fileStore.storeFile(multipartFile, userId);
+
+            String imageUrl = "http://everyparking.co.kr/images/" + uploadFile.getStoreFileName();
+
 
             log.info("[{}] {} file 저장 성공", this.getClass().getName(),
                 multipartFile.getOriginalFilename());
 
-            return ResponseEntity.status(HttpStatus.OK).build();
+//            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(imageUrl);
+
 
         } catch (Exception e) {
             log.info("[{}] {}", this.getClass().getName(),

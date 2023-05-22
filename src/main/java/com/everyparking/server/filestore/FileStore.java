@@ -54,7 +54,7 @@ public class FileStore {
 
         uploadFileRepository.save(uploadFile);
 
-        return null;
+        return uploadFile;
 
     }
 
