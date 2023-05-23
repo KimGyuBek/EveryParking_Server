@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://43.201.95.43:8083")      // aws 접속 아이피
+                .allowedOrigins("http://everyparking.co.kr")      // aws 접속 아이피
                 .allowedOrigins("http://127.0.0.1:5500")    // local환경 html 확인용
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Content-Type")
