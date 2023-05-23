@@ -31,7 +31,7 @@
 }
 .slide-section {
     overflow-y: auto;
-    height: 80%;
+    height: 90%;
 }
 .slide-section::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/

@@ -19,12 +19,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Member")
 @Builder
 @AllArgsConstructor
 @Getter
+@Setter
 public class Member extends BaseTime {
 
     @Id

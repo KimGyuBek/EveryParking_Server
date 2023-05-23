@@ -1,8 +1,8 @@
 package com.everyparking.server.controller.web;
 
-import com.everyparking.server.data.dto.EntryLogDto;
-import com.everyparking.server.data.dto.ParkingDto;
+import com.everyparking.server.data.dto.*;
 import com.everyparking.server.data.entity.ParkingLot;
+import com.everyparking.server.data.entity.Report;
 import com.everyparking.server.service.ManagerWebService;
 import com.everyparking.server.service.ParkingBreakerService;
 import com.everyparking.server.service.ParkingService;
@@ -26,7 +26,7 @@ public class ManagerWebController {
 
     @GetMapping("/api/entry-log")
     public List<EntryLogDto> getEntryLogs(@PageableDefault(size=20) Pageable pageable) {
-        return managerWebService.getAllLogs(pageable).getContent();
+        return managerWebService.getAllEntryLogs(pageable).getContent();
     }
 
     @GetMapping("/api/exit")
@@ -53,6 +53,27 @@ public class ManagerWebController {
         } catch (Exception e) {
             return status(HttpStatus.NOT_FOUND)
                     .build();
+        }
+    }
+
+    /**
+     * 신고리스트 전체 불러오기. 최근 시간 순으로 정렬
+     */
+    @GetMapping("/api/report-log")
+    public List<Report> getReportLogs(@PageableDefault(size=20) Pageable pageable) {
+        return managerWebService.getAllReportLogs(pageable).getContent();
+    }
+
+    /**
+     * 관리자 전용 회원 위약 처리
+     */
+    @PostMapping("/api/violation")
+    public ResponseEntity<?> violation(@RequestBody ViolationDto violationDto) {
+        try {
+            managerWebService.violation(violationDto);
+            return ResponseEntity.status(HttpStatus.OK).body("User violated Successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to violate user");
         }
     }
 }
