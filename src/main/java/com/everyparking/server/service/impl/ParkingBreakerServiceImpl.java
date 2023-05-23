@@ -3,15 +3,15 @@ package com.everyparking.server.service.impl;
 import com.everyparking.server.data.dto.EntryLogDto;
 import com.everyparking.server.data.dto.ParkingBreakerDto;
 import com.everyparking.server.data.dto.ParkingBreakerDto.Request;
-import com.everyparking.server.data.entity.Car;
-import com.everyparking.server.data.entity.CarEnterStatus;
-import com.everyparking.server.data.entity.EntryLog;
+import com.everyparking.server.data.entity.*;
 import com.everyparking.server.data.repository.CarRepository;
 import com.everyparking.server.data.repository.EntryLogRepository;
+import com.everyparking.server.data.repository.MemberRepository;
 import com.everyparking.server.data.repository.ParkingInfoRepository;
 import com.everyparking.server.event.EntryLogChangeEvent;
 import com.everyparking.server.exception.CarValidationException;
 import com.everyparking.server.service.ParkingBreakerService;
+import com.everyparking.server.service.ParkingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -36,6 +36,9 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
 
     private final EntryLogRepository entryLogRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final MemberRepository memberRepository;
+
+    private final ParkingService parkingService;
 
     @Override
     public ParkingBreakerDto.Response isValid(Request request) {
@@ -129,26 +132,40 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
         // exitTime update
         // 해당 차량에 대한 출입 기록 중에 출차 기록이 없으면 exitTime 갱신
         try {
-//            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
-//            if(found.isEmpty()) {
-//                throw new Exception("들어온 기록이 없음.");
-//            }
-//            EntryLog updated = found.get();
-//            ZoneId zoneId = ZoneId.of("Asia/Seoul");
-//            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-//            updated.setExitTime(zonedDateTime.toLocalDateTime());
-//            entryLogRepository.save(updated);
-//            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
-//
-//            // car is_entered 업데이트
-//            // Car 엔티티 @Setter 추가
-//            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
-//            if (found2.isEmpty()) {
-//                throw new Exception("error");
-//            }
-//            Car updated2 = found2.get();
-//            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
-//            carRepository.save(updated2);
+            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
+            if(found.isEmpty()) {
+                throw new Exception("들어온 기록이 없음.");
+            }
+            EntryLog updated = found.get();
+            ZoneId zoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+            updated.setExitTime(zonedDateTime.toLocalDateTime());
+            entryLogRepository.save(updated);
+            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
+
+            // car is_entered 업데이트
+            // Car 엔티티 @Setter 추가
+            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
+            if (found2.isEmpty()) {
+                throw new Exception("error");
+            }
+            Car updated2 = found2.get();
+            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
+            carRepository.save(updated2);
+
+            /*member parking info update*/
+            Optional<Member> member = memberRepository.findByCarId(updated2.getId());
+            if (member.isPresent()) {
+                Member foundMember = member.get();
+                Long parkingInfoId = foundMember.getParkingInfo().getId();
+                if (parkingInfoId != null) {
+                    foundMember.changeParkingStatus(parkingInfoRepository.findById(foundMember.getParkingInfo().getId()).get());
+                    memberRepository.save(foundMember);
+                    /*관리자 실시간 맵 렌더링*/
+                    eventPublisher.publishEvent(new EntryLogChangeEvent(parkingService.findByParingId(parkingInfoId)));
+                }
+            }
+
 
         } catch(Exception e) {
             log.debug("[ParkingBreakerService] {}", e.toString());
