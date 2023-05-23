@@ -1,6 +1,21 @@
 package com.everyparking.server.config;
 
-public class WebConfig {
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-    /*TODO session 처리*/
+@RequiredArgsConstructor
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://43.201.95.43:8083")      // aws 접속 아이피
+                .allowedOrigins("http://127.0.0.1:5500")    // local환경 html 확인용
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("Content-Type")
+                .allowCredentials(true)
+                .maxAge(3600);
+    }
 }

@@ -1,16 +1,28 @@
 package com.everyparking.server.service.impl;
 
+import com.everyparking.server.data.dto.EntryLogDto;
 import com.everyparking.server.data.dto.ParkingBreakerDto;
 import com.everyparking.server.data.dto.ParkingBreakerDto.Request;
 import com.everyparking.server.data.entity.Car;
+import com.everyparking.server.data.entity.CarEnterStatus;
+import com.everyparking.server.data.entity.EntryLog;
 import com.everyparking.server.data.repository.CarRepository;
+import com.everyparking.server.data.repository.EntryLogRepository;
 import com.everyparking.server.data.repository.ParkingInfoRepository;
+import com.everyparking.server.event.EntryLogChangeEvent;
 import com.everyparking.server.exception.CarValidationException;
 import com.everyparking.server.service.ParkingBreakerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +33,9 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
     private final ParkingInfoRepository parkingInfoRepository;
 
     private final CarRepository carRepository;
+
+    private final EntryLogRepository entryLogRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public ParkingBreakerDto.Response isValid(Request request) {
@@ -35,6 +50,10 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
 
             if (!findCar.getMember().checkMemberStatus()) {
                 throw new Exception("위약된 사용자");
+            }
+
+            if (findCar.getCarEnterStatus().isEnter()) {
+                throw new Exception("해당 차량은 이미 들어와 있습니다.");
             }
 
             /*TODO 위약 검증 로직 추가*/
@@ -77,6 +96,63 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
                 .build();
         }
 
+    }
+    @Override
+    public void entry(String fileFullName) {
+        try {
+            // 이미지 파일명 split 해서 입력
+            int dotIndex = fileFullName.lastIndexOf(".");
+            String vehicle_info = (dotIndex == -1) ? fileFullName : fileFullName.substring(0, dotIndex);
+            String[] info = vehicle_info.split("_");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(info[1], formatter);
+            EntryLog entryLogEntity = EntryLog.builder()
+                    .carNumber(info[0])
+                    .entryTime(localDateTime)
+                    .build();
+            EntryLog savedEntity = entryLogRepository.save(entryLogEntity);
+
+            EntryLogDto entryLogDto = EntryLogDto.builder()
+                    .id(savedEntity.getId())
+                    .carNumber(savedEntity.getCarNumber())
+                    .entryTime(savedEntity.getEntryTime())
+                    .exitTime(savedEntity.getExitTime())
+                    .build();
+            eventPublisher.publishEvent(new EntryLogChangeEvent(entryLogDto));
+        } catch(Exception e) {
+            log.debug("[ParkingBreakerService] {}", e.toString());
+        }
+    }
+
+    @Override
+    public void exit(String carNumber) {
+        // exitTime update
+        // 해당 차량에 대한 출입 기록 중에 출차 기록이 없으면 exitTime 갱신
+        try {
+            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
+            if(found.isEmpty()) {
+                throw new Exception("들어온 기록이 없음.");
+            }
+            EntryLog updated = found.get();
+            ZoneId zoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+            updated.setExitTime(zonedDateTime.toLocalDateTime());
+            entryLogRepository.save(updated);
+            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
+
+            // car is_entered 업데이트
+            // Car 엔티티 @Setter 추가
+            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
+            if (found2.isEmpty()) {
+                throw new Exception("error");
+            }
+            Car updated2 = found2.get();
+            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
+            carRepository.save(updated2);
+
+        } catch(Exception e) {
+            log.debug("[ParkingBreakerService] {}", e.toString());
+        }
     }
 
 }

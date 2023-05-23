@@ -1,5 +1,6 @@
 package com.everyparking.server.data.entity;
 
+import com.everyparking.server.data.dto.ReportDto;
 import com.everyparking.server.filestore.UploadFile;
 import java.util.ArrayList;
 import java.util.List;
