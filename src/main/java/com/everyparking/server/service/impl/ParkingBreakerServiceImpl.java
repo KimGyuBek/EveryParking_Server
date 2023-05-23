@@ -129,26 +129,26 @@ public class ParkingBreakerServiceImpl implements ParkingBreakerService {
         // exitTime update
         // 해당 차량에 대한 출입 기록 중에 출차 기록이 없으면 exitTime 갱신
         try {
-            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
-            if(found.isEmpty()) {
-                throw new Exception("들어온 기록이 없음.");
-            }
-            EntryLog updated = found.get();
-            ZoneId zoneId = ZoneId.of("Asia/Seoul");
-            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-            updated.setExitTime(zonedDateTime.toLocalDateTime());
-            entryLogRepository.save(updated);
-            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
-
-            // car is_entered 업데이트
-            // Car 엔티티 @Setter 추가
-            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
-            if (found2.isEmpty()) {
-                throw new Exception("error");
-            }
-            Car updated2 = found2.get();
-            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
-            carRepository.save(updated2);
+//            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
+//            if(found.isEmpty()) {
+//                throw new Exception("들어온 기록이 없음.");
+//            }
+//            EntryLog updated = found.get();
+//            ZoneId zoneId = ZoneId.of("Asia/Seoul");
+//            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+//            updated.setExitTime(zonedDateTime.toLocalDateTime());
+//            entryLogRepository.save(updated);
+//            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
+//
+//            // car is_entered 업데이트
+//            // Car 엔티티 @Setter 추가
+//            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
+//            if (found2.isEmpty()) {
+//                throw new Exception("error");
+//            }
+//            Car updated2 = found2.get();
+//            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
+//            carRepository.save(updated2);
 
         } catch(Exception e) {
             log.debug("[ParkingBreakerService] {}", e.toString());

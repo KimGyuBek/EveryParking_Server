@@ -95,7 +95,7 @@ function addReportLogItem(log) {
     // 위약처리 이벤트 생성
     violationButton.addEventListener('click', (e) => {
         fetch(`http://${config.ip}/api/violation`, {
-            method: 'POST', 
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({userId: log.memberId})
         })
@@ -105,7 +105,7 @@ function addReportLogItem(log) {
                 } else {
                     throw new Error("Failed to violate user");
                 }
-                })
+            })
             .catch(error => {
                 console.error('Error:', error);
             });

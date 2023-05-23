@@ -116,8 +116,11 @@
     background-color: #0d6efd;
     color: white;
 }
-.btn-primary.occupuied {
+.btn-primary.occupied {
     background-color: #0d6efd;
+}
+.btn-primary.occupied:hover {
+    background-color: #0b5ed7;
 }
 
 
@@ -153,4 +156,45 @@
 }
 #reportSection-toggle:hover {
     color: #0c4db0;
+}
+
+.modal-body {
+    padding: 0 26px;
+}
+.modal-body > div {
+    padding: 0 12px;
+}
+.modal-body-timeInfo {
+    color: #0d6efd;
+}
+.modal-body-timeInfo, .modal-body-carInfo {
+    height: 50px;
+    line-height: 50px;
+}
+.modal-body > div:not(div:last-child) {
+    border-bottom: 1px solid #dee2e6;
+}
+.modal-body-userInfo p {
+    height: 40px;
+    line-height: 40px;
+}
+.modal-body-userInfo p:first-child::before {
+    content:"아이디: ";
+    height: 40px;
+    line-height: 40px;
+}
+.modal-body-userInfo p:first-child::before::after {
+    width: 1px;
+    height: 10px;
+    border-left: solid 1px black;
+}
+.modal-body-userInfo p:last-child::before {
+    content:"이름: ";
+    height: 40px;
+    line-height: 40px;
+}
+.modal-body-carInfo::before {
+    content:"차량번호: ";
+    height: 50px;
+    line-height: 50px;
 }

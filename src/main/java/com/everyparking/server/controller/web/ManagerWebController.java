@@ -2,6 +2,7 @@ package com.everyparking.server.controller.web;
 
 import com.everyparking.server.data.dto.*;
 import com.everyparking.server.data.entity.ParkingLot;
+import com.everyparking.server.data.entity.ParkingStatus;
 import com.everyparking.server.data.entity.Report;
 import com.everyparking.server.service.ManagerWebService;
 import com.everyparking.server.service.ParkingBreakerService;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -39,16 +41,22 @@ public class ManagerWebController {
         }
     }
 
-    @GetMapping("/map/{parkingLotId}")
-    public ResponseEntity<ParkingDto.ParkingLotMap> parkingLotMap(@PathVariable Long parkingLotId) {
+    @GetMapping("/api/map/{parkingLotId}")
+    public ResponseEntity<List<ParkingDto.ParkingInfoDto.Info>> parkingLotMap(@PathVariable Long parkingLotId) {
         try {
             /*ParkingLot 조회*/
             ParkingLot parkingLot = parkingService.findParkingLotByParkingLotId(
                     parkingLotId);
             ParkingDto.ParkingLotMap parkingLotMap = parkingService.findParkingLotMap(parkingLot);
 
+            /*각 좌석마다 차량정보와 차량정보*/
+            List<ParkingDto.ParkingInfoDto.Info> assignInfo = new ArrayList<>();
+            parkingLotMap.getParkingInfoList().forEach(info -> {
+                assignInfo.add(parkingService.findByParingId(info.getId()));
+            });
+
             return status(HttpStatus.OK)
-                    .body(parkingLotMap);
+                    .body(assignInfo);
 
         } catch (Exception e) {
             return status(HttpStatus.NOT_FOUND)

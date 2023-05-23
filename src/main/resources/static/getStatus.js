@@ -21,7 +21,7 @@ const ReportLogListContainer = document.getElementById("reportStatus-container")
 fetch(`http://${config.ip}/api/report-log`, {method: 'GET', headers: {'Content-Type': 'application/json'}})
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        // console.log(data)
         data.forEach(log => {
             ReportLogListContainer.appendChild(addReportLogItem(log));
         });
@@ -30,21 +30,29 @@ fetch(`http://${config.ip}/api/report-log`, {method: 'GET', headers: {'Content-T
         console.error('Error:', error);
     });
 
-// 주차장 정보 불러오기
+// 주차장 맵 그리기
 drawMap();
-fetch(`http://${config.ip}/app/parking/map/1`, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+// 주차장 좌석 현황 불러오기
+fetch(`http://${config.ip}/api/map/1`, {method: 'GET', headers: {'Content-Type': 'application/json'}})
     .then(response => response.json())
     .then(data => {
-        console.log(data)
-        data.parkingInfoList.forEach(info => {
+        data.forEach(info => {
             // console.log(info.parkingId);
             const infoElement = document.getElementById(`info-${info.parkingId}`);
+            const modalElement = document.getElementById(`modal-info-${info.parkingId}`);
+            const modalHeaderTitle = modalElement.querySelector(`.modal-header-title-${info.parkingId}`);
+            const modalBodyUserId = modalElement.querySelector(`.modal-body-userId`);
+            const modalBodyUserName = modalElement.querySelector(`.modal-body-userName`);
+            const modalBodyCarInfo = modalElement.querySelector(`.modal-body-carInfo`);
+            const modalBodyTimeInfo = modalElement.querySelector(`.modal-body-timeInfo`);
 
             if (info.parkingStatus === 'USED') {
-                infoElement.className = 'spot occupied';
-                infoElement.addEventListener('click', () => {
-                    // 모달창
-                });
+                infoElement.className = 'spot map-col btn btn-primary occupied';
+                modalBodyUserId.textContent = `${info.details.member.userId}`;
+                modalBodyUserName.textContent = `${info.details.member.userName}`;
+                modalBodyCarInfo.textContent = `${info.details.carNumber}`;
+                let currentTime = new Date();
+                modalBodyTimeInfo.textContent = `${currentTime.getHours().toString().padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}`
             }
         });
     })

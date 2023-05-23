@@ -7,21 +7,22 @@ import com.everyparking.server.data.dto.ParkingDto.ParkingInfoDto;
 import com.everyparking.server.data.dto.ParkingDto.ParkingInfoDto.Info;
 import com.everyparking.server.data.dto.ParkingDto.ParkingInfoDto.Map;
 import com.everyparking.server.data.dto.ParkingDto.ParkingLotMap;
-import com.everyparking.server.data.entity.Member;
-import com.everyparking.server.data.entity.ParkingInfo;
-import com.everyparking.server.data.entity.ParkingLot;
-import com.everyparking.server.data.entity.ParkingStatus;
-import com.everyparking.server.data.repository.MemberRepository;
-import com.everyparking.server.data.repository.ParkingInfoRepository;
-import com.everyparking.server.data.repository.ParkingLotRepository;
+import com.everyparking.server.data.entity.*;
+import com.everyparking.server.data.repository.*;
+import com.everyparking.server.event.EntryLogChangeEvent;
 import com.everyparking.server.exception.ParkingInfoException;
 import com.everyparking.server.exception.ParkingLotException;
 import com.everyparking.server.exception.UserNotFoundException;
 import com.everyparking.server.service.ParkingService;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,9 @@ public class ParkingServiceImpl implements ParkingService {
     private final ParkingInfoRepository parkingInfoRepository;
 
     private final MemberRepository memberRepository;
+    private final EntryLogRepository entryLogRepository;
+    private final CarRepository carRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * <p>
@@ -167,6 +171,7 @@ public class ParkingServiceImpl implements ParkingService {
 
 
         } catch (ParkingInfoException e) {
+            log.debug(e.getMessage());
             throw e;
         }
     }
@@ -183,6 +188,16 @@ public class ParkingServiceImpl implements ParkingService {
             ParkingInfo parkingInfo = parkingInfoRepository.findById(parkingInfoId).orElseThrow(
                 () -> new ParkingInfoException("ParkingInfo Error")
             );
+
+            /*해당 차량이 주차장 내에 들어와 있는지 확인해야됨*/
+            String carNumber = member.getCar().getCarNumber();
+            Car car = carRepository.findByCarNumber(carNumber).orElseThrow(
+                    () -> new Exception("일치하는 차량번호가 존재하지 않음.")
+            );
+            if (!car.getCarEnterStatus().isEnter()) {
+                throw new Exception("차량이 주차장 내에 존재하지 않음.");
+            }
+
 //            member.assignParking(parkingInfo);
             member.changeParkingStatus(parkingInfo);
             memberRepository.save(member);
@@ -200,6 +215,9 @@ public class ParkingServiceImpl implements ParkingService {
         } catch (UserNotFoundException e) {
             log.info("[{}] {}", this.getClass().getName(), e.getMessage());
             throw e;
+        } catch (Exception e) {
+            log.info("[{}] {}", this.getClass().getName(), e.getMessage());
+            throw new RuntimeException(e);
         }
 
     }
@@ -218,15 +236,48 @@ public class ParkingServiceImpl implements ParkingService {
                 () -> new ParkingInfoException("ParkingInfo Error")
             );
 
+            if (member.getParkingInfo() == null) {
+                throw new Exception("자리 배정부터 수행하세요.");
+            }
+
             member.changeParkingStatus(parkingInfo);
             memberRepository.save(member);
 
+            /*반납할 때 출차 기록 및 관리자에게 알람*/
+            String carNumber = member.getCar().getCarNumber();
+            Optional<EntryLog> found = entryLogRepository.findFirstByCarNumberAndExitTimeIsNull(carNumber);
+            if(found.isEmpty()) {
+                throw new Exception("들어온 기록이 없음.");
+            }
+            EntryLog updated = found.get();
+            ZoneId zoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+            updated.setExitTime(zonedDateTime.toLocalDateTime());
+            entryLogRepository.save(updated);
+            eventPublisher.publishEvent(new EntryLogChangeEvent(updated.toDto()));
+            log.info("[{}] 관리자에게 출차 알람", this.getClass().getName());
+
+
+            // car is_entered 업데이트
+            // Car 엔티티 @Setter 추가
+            Optional<Car> found2 = carRepository.findByCarNumber(carNumber);
+            if (found2.isEmpty()) {
+                throw new Exception("error");
+            }
+            Car updated2 = found2.get();
+            updated2.setCarEnterStatus(new CarEnterStatus(-1, false));
+            carRepository.save(updated2);
+
             log.info("[{}] {}번 자리 반납", this.getClass().getName(), parkingInfo.getParkingId());
+            log.info("[{}] {}번 출차 기록", this.getClass().getName(), parkingInfo.getParkingId());
 
 
         } catch (UserNotFoundException e) {
             log.info("[{}] {}", this.getClass().getName(), e.getMessage());
             throw e;
+        } catch (Exception e) {
+            log.info("[{}] {}", this.getClass().getName(), e.getMessage());
+            throw new RuntimeException(e);
         }
 
     }
