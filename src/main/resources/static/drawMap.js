@@ -1,3 +1,5 @@
+import config from "./config.js";
+
 function drawMap() {
     let spotNum = 0;
     const parkingMap = document.getElementById('parking-map');
@@ -88,9 +90,10 @@ function drawMap() {
                 // 모달 이해 버튼 생성
                 const understandButton = document.createElement('button');
                 understandButton.type = 'button';
-                understandButton.classList.add('btn', 'btn-primary');
+                understandButton.classList.add('btn', 'btn-danger', `info-violation-${spotNum}`);
                 understandButton.setAttribute('data-bs-dismiss', 'modal');
-                understandButton.textContent = '확인';
+                understandButton.textContent = '위약';
+
 
                 // 모달 구조 조립
                 modalHeader.appendChild(modalTitle);

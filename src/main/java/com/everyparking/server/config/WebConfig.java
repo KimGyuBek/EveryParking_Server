@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://127.0.0.1:3000",
-                        "http://13.125.33.177:8083",
+                        "http://13.124.225.100:8083",
                         "http://127.0.0.1:5500")   // local환경 html 확인용
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")

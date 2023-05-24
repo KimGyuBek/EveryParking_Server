@@ -108,7 +108,7 @@ function addEntryLogItem(log) {
     const exitButton = document.createElement('button');
     exitButton.className = 'btn btn-danger btn-sm exit-btn';
     exitButton.type = 'button';
-    exitButton.textContent = '퇴장';
+    exitButton.textContent = '강제 출차';
     exitButton.setAttribute('lp-str', log.carNumber);
 
     exitButton.addEventListener('click', (e) => {
