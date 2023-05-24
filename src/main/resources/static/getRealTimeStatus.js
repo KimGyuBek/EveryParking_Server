@@ -74,6 +74,8 @@ stompClient.connect({}, function() {
         const logToastTitle = document.getElementById('logToast-title');
         const logToastContent = document.getElementById('logToast-content');
 
+        const violationButton = modalElement.querySelector(`.info-violation-${info.parkingId}`)
+
         if (info.parkingStatus === 'AVAILABLE') {
             infoElement.className = 'spot map-col btn btn-primary unoccupied';
             modalBodyUserId.textContent = "";
@@ -82,6 +84,27 @@ stompClient.connect({}, function() {
             modalBodyTimeInfo.textContent = "";
 
         } else if (info.parkingStatus === 'USED') {
+            // 위약처리 이벤트 생성
+            violationButton.addEventListener('click', (e) => {
+                fetch(`http://${config.ip}/api/violation`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'userId': info.details.member.userId
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else {
+                            throw new Error("Failed to violate user");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
             infoElement.className = 'spot map-col btn btn-primary occupied';
             modalBodyUserId.textContent = `${info.details.member.userId}`;
             modalBodyUserName.textContent = `${info.details.member.userName}`;
