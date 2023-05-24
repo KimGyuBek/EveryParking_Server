@@ -19,6 +19,7 @@ public interface ParkingInfoRepository extends JpaRepository<ParkingInfo, Long> 
     Optional<List<ParkingInfo>> findAllByParkingLot(ParkingLot parkingLot);
 
     Optional<ParkingInfo> findById(Long parkingInfoId);
+    Optional<ParkingInfo> findByParkingId(Long parkingInfoId);
 
     Optional<ParkingInfo> findByMember_UserId(String userId);
 

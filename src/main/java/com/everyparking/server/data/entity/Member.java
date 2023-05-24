@@ -107,7 +107,6 @@ public class Member extends BaseTime {
         }
 
         parkingInfo.changeParkingStatus();
-
     }
 
     /*차량 등록 검증*/

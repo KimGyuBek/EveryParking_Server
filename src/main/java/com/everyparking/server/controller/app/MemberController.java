@@ -57,7 +57,7 @@ public class MemberController {
      *
      * @param loginDto
      */
-    @CrossOrigin("*")
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody MemberDto.Login.Request loginDto) {
         try {

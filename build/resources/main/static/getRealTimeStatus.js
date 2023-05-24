@@ -34,7 +34,7 @@ stompClient.connect({}, function() {
             const accordionButton = existLogItem.querySelector('.accordion-button');
             accordionButton.style.color = "red";
 
-            logToastTitle.textContent = '퇴장';
+            logToastTitle.textContent = '반납';
             logToastTitle.style.color = 'red';
             logToastContent.textContent = `${log.carNumber}(이)가 출차하였습니다.`;
             const toast = new bootstrap.Toast(toastLive);
@@ -43,7 +43,7 @@ stompClient.connect({}, function() {
         } else {
             EntryLogListContainer.insertBefore(addEntryLogItem(log), EntryLogListContainer.firstChild);
 
-            logToastTitle.textContent = '입장';
+            logToastTitle.textContent = '승인';
             logToastTitle.style.color = 'blue';
             logToastContent.textContent = `${log.carNumber}(이)가 입차하였습니다.`;
             const toast = new bootstrap.Toast(toastLive);
@@ -54,7 +54,70 @@ stompClient.connect({}, function() {
     // 실시간 신고 현황
     stompClient.subscribe('/topic/report-log', function (response) {
         let log = JSON.parse(response.body);
+    });
 
+
+    // 실시간 좌석 현황
+    stompClient.subscribe('/topic/parking-status', function (response) {
+        let info = JSON.parse(response.body);
+        console.log(info)
+
+        const infoElement = document.getElementById(`info-${info.parkingId}`);
+        const modalElement = document.getElementById(`modal-info-${info.parkingId}`);
+        const modalHeaderTitle = modalElement.querySelector(`.modal-header-title-${info.parkingId}`);
+        const modalBodyUserId = modalElement.querySelector(`.modal-body-userId`);
+        const modalBodyUserName = modalElement.querySelector(`.modal-body-userName`);
+        const modalBodyCarInfo = modalElement.querySelector(`.modal-body-carInfo`);
+        const modalBodyTimeInfo = modalElement.querySelector(`.modal-body-timeInfo`);
+
+        const toastLive = document.getElementById('liveToast');
+        const logToastTitle = document.getElementById('logToast-title');
+        const logToastContent = document.getElementById('logToast-content');
+
+        const violationButton = modalElement.querySelector(`.info-violation-${info.parkingId}`)
+
+        if (info.parkingStatus === 'AVAILABLE') {
+            infoElement.className = 'spot map-col btn btn-primary unoccupied';
+            modalBodyUserId.textContent = "";
+            modalBodyUserName.textContent = "";
+            modalBodyCarInfo.textContent = "";
+            modalBodyTimeInfo.textContent = "";
+
+        } else if (info.parkingStatus === 'USED') {
+            // 위약처리 이벤트 생성
+            violationButton.addEventListener('click', (e) => {
+                fetch(`http://${config.ip}/api/violation`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'userId': info.details.member.userId
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.text();
+                        } else {
+                            throw new Error("Failed to violate user");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            infoElement.className = 'spot map-col btn btn-primary occupied';
+            modalBodyUserId.textContent = `${info.details.member.userId}`;
+            modalBodyUserName.textContent = `${info.details.member.userName}`;
+            modalBodyCarInfo.textContent = `${info.details.carNumber}`;
+            let currentTime = new Date();
+            modalBodyTimeInfo.textContent = `${currentTime.getHours().toString().padStart(2, '0')}:${currentTime.getMinutes().toString().padStart(2, '0')}`
+
+            logToastTitle.textContent = '배정';
+            logToastTitle.style.color = 'red';
+            logToastContent.textContent = `${info.details.carNumber}(이)가 ${info.parkingId}번에 배정되었습니다.`;
+            const toast = new bootstrap.Toast(toastLive);
+            toast.show();
+        }
     });
 });
 socket.onclose = function () {

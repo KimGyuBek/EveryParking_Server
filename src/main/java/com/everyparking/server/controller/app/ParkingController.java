@@ -2,14 +2,24 @@ package com.everyparking.server.controller.app;
 
 import static org.springframework.http.ResponseEntity.status;
 
+import com.everyparking.server.data.dto.CarDto;
+import com.everyparking.server.data.dto.MemberDto;
 import com.everyparking.server.data.dto.ParkingDto;
 import com.everyparking.server.data.dto.ParkingDto.MyParkingStatus;
 import com.everyparking.server.data.dto.ParkingDto.ParkingLotMap;
+import com.everyparking.server.data.entity.Member;
+import com.everyparking.server.data.entity.ParkingInfo;
 import com.everyparking.server.data.entity.ParkingLot;
+import com.everyparking.server.data.entity.ParkingStatus;
+import com.everyparking.server.data.repository.MemberRepository;
+import com.everyparking.server.event.EntryLogChangeEvent;
+import com.everyparking.server.event.EntryLogEventListener;
+import com.everyparking.server.exception.ParkingInfoException;
 import com.everyparking.server.service.ParkingService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ParkingController {
 
     private final ParkingService parkingService;
+    private final ApplicationEventPublisher eventPublisher;
+
+    private final MemberRepository memberRepository;
 
 
     /**
@@ -64,8 +77,7 @@ public class ParkingController {
 
         try {
             /*ParkingLot 조회*/
-            ParkingLot parkingLot = parkingService.findParkingLotByParkingLotId(
-                parkingLotId);
+            ParkingLot parkingLot = parkingService.findParkingLotByParkingLotId(parkingLotId);
             ParkingLotMap parkingLotMap = parkingService.findParkingLotMap(parkingLot);
 
             return status(HttpStatus.OK)
@@ -111,9 +123,35 @@ public class ParkingController {
     public ResponseEntity<?> assign(@PathVariable Long parkingInfoId, HttpServletRequest request) {
 
         try {
+            ParkingDto.ParkingInfoDto.Info parkingInfo = parkingService.assign(parkingInfoId, request.getHeader("userId"));
+
+            /*관리자 실시간 맵 렌더링*/
+            Member member = memberRepository.findByParkingInfoId(parkingInfoId).orElseThrow(
+                    () -> new Exception("현재 유저는 자리를 배정 받은 상태가 아닙니다.")
+            );
+            eventPublisher.publishEvent(new EntryLogChangeEvent(
+                ParkingDto.ParkingInfoDto.Info.builder()
+                        .id(parkingInfo.getId())
+                        .parkingId(parkingInfo.getParkingId())
+                        .parkingStatus(parkingInfo.getParkingStatus())
+                        .details(
+                                CarDto.ParkingInfo.builder()
+                                        .id(member.getCar().getId())
+                                        .carNumber(member.getCar().getCarNumber())
+                                        .member(
+                                                MemberDto.UserParkingInfo.builder()
+                                                        .id(member.getId())
+                                                        .userId(member.getUserId())
+                                                        .userName(member.getUserName())
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                        .build()
+            ));
+
             return status(HttpStatus.OK)
-                .body(
-                    parkingService.assign(parkingInfoId, request.getHeader("userId")));
+                    .body(parkingInfo);
 
         } catch (Exception e) {
             log.info("[{}] {}", this.getClass().getName(), e.getMessage());
@@ -131,6 +169,10 @@ public class ParkingController {
 
         try {
             parkingService.parkingReturn(parkingInfoId, request.getHeader("userId"));
+
+            /*관리자 실시간 맵 렌더링*/
+            eventPublisher.publishEvent(new EntryLogChangeEvent(parkingService.findByParingId(parkingInfoId)));
+
             return status(HttpStatus.OK).build();
         } catch (Exception e) {
             return status(HttpStatus.BAD_REQUEST).build();

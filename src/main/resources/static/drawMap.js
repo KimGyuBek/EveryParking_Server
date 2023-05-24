@@ -1,3 +1,5 @@
+import config from "./config.js";
+
 function drawMap() {
     let spotNum = 0;
     const parkingMap = document.getElementById('parking-map');
@@ -8,9 +10,9 @@ function drawMap() {
             const spot = document.createElement('div');
             const modal = document.createElement('div');
             spot.className = 'spot map-col btn btn-primary unoccupied';
-            
+
             let num = i+j*19;
-            if ((num >= 19 && num <= 37) || (num >= 76 && num <= 94) || 
+            if ((num >= 19 && num <= 37) || (num >= 76 && num <= 94) ||
                 (num >= 38 && num <= 40) || (num >= 57 && num <= 59) ||
                 (num >= 54 && num <= 56) || (num >= 73 && num <= 75) ||
                 (num >= 95 && num <= 97) || [16,111,9,104,2].includes(num)) {
@@ -44,7 +46,7 @@ function drawMap() {
 
                 // 모달 제목 생성
                 const modalTitle = document.createElement('h1');
-                modalTitle.classList.add('modal-title', 'fs-5');
+                modalTitle.classList.add('modal-title', 'fs-5', `modal-header-title-${spotNum}`);
                 modalTitle.id = `target-${spotNum}`;
                 modalTitle.textContent = `${spotNum}번 자리`;
 
@@ -57,8 +59,29 @@ function drawMap() {
 
                 // 모달 본문 생성
                 const modalBody = document.createElement('div');
-                modalBody.classList.add('modal-body');
-                modalBody.textContent = `content ${spotNum}`;
+                modalBody.classList.add('modal-body', `modal-header-content-${spotNum}`);
+
+                const modalBodyUserInfo = document.createElement('div');
+                modalBodyUserInfo.classList.add('modal-body-userInfo');
+                modalBodyUserInfo.textContent = "";
+
+                const userInfoUserId = document.createElement('p');
+                userInfoUserId.className = `modal-body-userId`;
+                const userInfoUserName = document.createElement('p');
+                userInfoUserName.className = `modal-body-userName`;
+
+                modalBodyUserInfo.append(userInfoUserId);
+                modalBodyUserInfo.append(userInfoUserName);
+
+                const modalBodyCarInfo = document.createElement('div');
+                modalBodyCarInfo.classList.add('modal-body-carInfo');
+
+                const modalBodyTimeInfo = document.createElement('div');
+                modalBodyTimeInfo.classList.add('modal-body-timeInfo');
+
+                modalBody.appendChild(modalBodyTimeInfo);
+                modalBody.appendChild(modalBodyUserInfo);
+                modalBody.appendChild(modalBodyCarInfo);
 
                 // 모달 푸터 생성
                 const modalFooter = document.createElement('div');
@@ -67,9 +90,10 @@ function drawMap() {
                 // 모달 이해 버튼 생성
                 const understandButton = document.createElement('button');
                 understandButton.type = 'button';
-                understandButton.classList.add('btn', 'btn-primary');
+                understandButton.classList.add('btn', 'btn-danger', `info-violation-${spotNum}`);
                 understandButton.setAttribute('data-bs-dismiss', 'modal');
-                understandButton.textContent = '확인';
+                understandButton.textContent = '위약';
+
 
                 // 모달 구조 조립
                 modalHeader.appendChild(modalTitle);

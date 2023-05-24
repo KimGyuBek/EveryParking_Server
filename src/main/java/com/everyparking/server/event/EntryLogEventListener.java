@@ -1,11 +1,14 @@
 package com.everyparking.server.event;
 
 import com.everyparking.server.data.dto.EntryLogDto;
+import com.everyparking.server.data.dto.ParkingDto;
 import com.everyparking.server.data.entity.EntryLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class EntryLogEventListener {
@@ -19,8 +22,13 @@ public class EntryLogEventListener {
 
     @EventListener
     public void handleEntityChangeEvent(EntryLogChangeEvent event) {
-        EntryLogDto changedEntity = (EntryLogDto) event.getSource();
-        messagingTemplate.convertAndSend("/topic/entry-log", changedEntity);
+        if (event.getSource() instanceof EntryLogDto) {
+            EntryLogDto changedEntity = (EntryLogDto) event.getSource();
+            messagingTemplate.convertAndSend("/topic/entry-log", changedEntity);
+        } else if (event.getSource() instanceof ParkingDto.ParkingInfoDto.Info) {
+            ParkingDto.ParkingInfoDto.Info changedEntity = (ParkingDto.ParkingInfoDto.Info) event.getSource();
+            messagingTemplate.convertAndSend("/topic/parking-status", changedEntity);
+        }
     }
 
 }
